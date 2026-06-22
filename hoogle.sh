@@ -17,7 +17,7 @@ trap 'rm -f "$TMP_OUT"' EXIT
 mkdir -p tmp
 
 # Execute the command and redirect both stdout and stderr to the temp file
-stack hoogle --rebuild -- --count=100 "$QUERY" > "$TMP_OUT" 2>&1
+stack hoogle --rebuild -- --count=100 $QUERY > "$TMP_OUT" 2>&1
 
 echo "Hoogle results:"
 
