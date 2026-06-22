@@ -1850,6 +1850,10 @@
 
 - error: { lhs: a $ b $ c, rhs: a . b $ c }
 
+# group: future
+
+- error: { lhs: return a, rhs: pure a }
+
 # group: strict
 
 - functions:

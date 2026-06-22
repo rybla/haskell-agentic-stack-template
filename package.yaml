@@ -46,7 +46,6 @@ default-extensions:
   - DerivingVia
   - DeriveAnyClass
   - OverloadedRecordDot
-  - BlockArguments
   - RecordWildCards
   - OverloadedStrings
   - QuasiQuotes

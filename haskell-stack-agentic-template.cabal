@@ -37,7 +37,6 @@ library
       DerivingVia
       DeriveAnyClass
       OverloadedRecordDot
-      BlockArguments
       RecordWildCards
       OverloadedStrings
       QuasiQuotes
@@ -75,7 +74,6 @@ executable haskell-stack-agentic-template-exe
       DerivingVia
       DeriveAnyClass
       OverloadedRecordDot
-      BlockArguments
       RecordWildCards
       OverloadedStrings
       QuasiQuotes
@@ -115,7 +113,6 @@ test-suite haskell-stack-agentic-template-test
       DerivingVia
       DeriveAnyClass
       OverloadedRecordDot
-      BlockArguments
       RecordWildCards
       OverloadedStrings
       QuasiQuotes
