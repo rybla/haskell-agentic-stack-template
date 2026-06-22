@@ -1,6 +1,6 @@
 name: haskell-stack-agentic-template
 version: 0.1.0.0
-github: "<github_username>/haskell-stack-agentic-template"
+github: "<author_github_username>/haskell-stack-agentic-template"
 license: BSD-3-Clause
 author: "<author_name>"
 maintainer: "<author_email>"
@@ -19,7 +19,7 @@ extra-source-files:
 # common to point users to the README.md file.
 description:
   Please see the README on GitHub at
-  <https://github.com/<github_username>/haskell-stack-agentic-template#readme>
+  <https://github.com/<author_github_username>/haskell-stack-agentic-template#readme>
 
 dependencies:
   - base >= 4.7 && < 5
