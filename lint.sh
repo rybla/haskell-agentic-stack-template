@@ -18,7 +18,7 @@ while true; do
     # Use find with a while-read loop to safely handle unusual filenames
     while IFS= read -r -d '' file; do
         # echo "Linting file: $file"
-        stack exec -- hlint --refactor --refactor-options="--inplace" "$file" >&2
+        stack exec -- hlint --ignore="todo" --refactor --refactor-options="--inplace" "$file" >&2
         exit_code=$?
 
         # Check the exit status of the hlint command

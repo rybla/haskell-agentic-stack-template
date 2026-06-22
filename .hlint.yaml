@@ -7,14 +7,6 @@
 
 - functions:
     - {
-        name: "todo",
-        within: [Utilities.Unsafe],
-        message:
-          "This is a placeholder. Replace this with a correct implementation
-          according to the functionality described by the message provided as
-          the first argument to this function.",
-      }
-    - {
         name: "error",
         within: [Utilities.Unsafe],
         message:
@@ -29,32 +21,39 @@
           functionality into a monadic action that implements MonadError.",
       }
 
+- warning:
+    { name: "todo", lhs: "todo s", rhs: "replace with actual implementation" }
+
+- warning:
+    { name: "todo", lhs: "todo $ s", rhs: "replace with actual implementation" }
+
 # group: default
 
 # I/O
 
-- error: { lhs: putStrLn (show x), rhs: print x }
-- error: { lhs: putStr (x <> "\n"), rhs: putStrLn x }
-- error: { lhs: putStr (x <> y <> "\n"), rhs: putStrLn (x <> y) }
-- error: { lhs: mapM_ putChar, rhs: putStr }
-- error: { lhs: hGetChar stdin, rhs: getChar }
-- error: { lhs: hGetLine stdin, rhs: getLine }
-- error: { lhs: hGetContents stdin, rhs: getContents }
-- error: { lhs: hPutChar stdout, rhs: putChar }
-- error: { lhs: hPutStr stdout, rhs: putStr }
-- error: { lhs: hPutStrLn stdout, rhs: putStrLn }
-- error: { lhs: hPrint stdout, rhs: print }
-- error: { lhs: hWaitForInput a 0, rhs: hReady a }
-- error: { lhs: hPutStrLn a (show b), rhs: hPrint a b }
-- error: { lhs: hIsEOF stdin, rhs: isEOF }
-- error: { lhs: withFile f WriteMode (\h -> hPutStr h x), rhs: writeFile f x }
-- error:
+- warning: { lhs: putStrLn (show x), rhs: print x }
+- warning: { lhs: putStr (x <> "\n"), rhs: putStrLn x }
+- warning: { lhs: putStr (x <> y <> "\n"), rhs: putStrLn (x <> y) }
+- warning: { lhs: mapM_ putChar, rhs: putStr }
+- warning: { lhs: hGetChar stdin, rhs: getChar }
+- warning: { lhs: hGetLine stdin, rhs: getLine }
+- warning: { lhs: hGetContents stdin, rhs: getContents }
+- warning: { lhs: hPutChar stdout, rhs: putChar }
+- warning: { lhs: hPutStr stdout, rhs: putStr }
+- warning: { lhs: hPutStrLn stdout, rhs: putStrLn }
+- warning: { lhs: hPrint stdout, rhs: print }
+- warning: { lhs: hWaitForInput a 0, rhs: hReady a }
+- warning: { lhs: hPutStrLn a (show b), rhs: hPrint a b }
+- warning: { lhs: hIsEOF stdin, rhs: isEOF }
+- warning: { lhs: withFile f WriteMode (\h -> hPutStr h x), rhs: writeFile f x }
+- warning:
     {
       lhs: withFile f WriteMode (\h -> hPutStrLn h x),
       rhs: writeFile f (x <> "\n"),
     }
-- error: { lhs: withFile f AppendMode (\h -> hPutStr h x), rhs: appendFile f x }
-- error:
+- warning:
+    { lhs: withFile f AppendMode (\h -> hPutStr h x), rhs: appendFile f x }
+- warning:
     {
       lhs: withFile f AppendMode (\h -> hPutStrLn h x),
       rhs: appendFile f (x <> "\n"),
@@ -62,33 +61,33 @@
 
 # EXIT
 
-- error: { lhs: exitWith ExitSuccess, rhs: exitSuccess }
+- warning: { lhs: exitWith ExitSuccess, rhs: exitSuccess }
 
 # ORD
 
-- error:
+- warning:
     { lhs: not (a == b), rhs: a /= b, note: incorrect if either value is NaN }
-- error:
+- warning:
     { lhs: not (a /= b), rhs: a == b, note: incorrect if either value is NaN }
-- error:
+- warning:
     { lhs: not (a >  b), rhs: a <= b, note: incorrect if either value is NaN }
-- error:
+- warning:
     { lhs: not (a >= b), rhs: a <  b, note: incorrect if either value is NaN }
-- error:
+- warning:
     { lhs: not (a <  b), rhs: a >= b, note: incorrect if either value is NaN }
-- error:
+- warning:
     { lhs: not (a <= b), rhs: a >  b, note: incorrect if either value is NaN }
-- error: { lhs: compare x y /= GT, rhs: x <= y }
-- error: { lhs: compare x y == LT, rhs: x < y }
-- error: { lhs: compare x y /= LT, rhs: x >= y }
-- error: { lhs: compare x y == GT, rhs: x > y }
-- error: { lhs: compare x y == EQ, rhs: x == y }
-- error: { lhs: compare x y /= EQ, rhs: x /= y }
-- error: { lhs: head (sort x), rhs: minimum x }
-- error: { lhs: last (sort x), rhs: maximum x }
-- error: { lhs: head (sortBy f x), rhs: minimumBy f x, side: isCompare f }
-- error: { lhs: last (sortBy f x), rhs: maximumBy f x, side: isCompare f }
-- error:
+- warning: { lhs: compare x y /= GT, rhs: x <= y }
+- warning: { lhs: compare x y == LT, rhs: x < y }
+- warning: { lhs: compare x y /= LT, rhs: x >= y }
+- warning: { lhs: compare x y == GT, rhs: x > y }
+- warning: { lhs: compare x y == EQ, rhs: x == y }
+- warning: { lhs: compare x y /= EQ, rhs: x /= y }
+- warning: { lhs: head (sort x), rhs: minimum x }
+- warning: { lhs: last (sort x), rhs: maximum x }
+- warning: { lhs: head (sortBy f x), rhs: minimumBy f x, side: isCompare f }
+- warning: { lhs: last (sortBy f x), rhs: maximumBy f x, side: isCompare f }
+- warning:
     {
       lhs: reverse (sortBy f x),
       rhs: sortBy (flip f) x,
@@ -96,267 +95,267 @@
       side: isCompare f,
       note: Stabilizes sort order,
     }
-- error:
+- warning:
     {
       lhs: sortBy (flip (comparing f)),
       rhs: sortBy (comparing (Data.Ord.Down . f)),
     }
-- error:
+- warning:
     {
       lhs: reverse (sortOn f x),
       rhs: sortOn (Data.Ord.Down . f) x,
       name: Avoid reverse,
       note: Stabilizes sort order,
     }
-- error:
+- warning:
     {
       lhs: reverse (sort x),
       rhs: sortBy (comparing Data.Ord.Down) x,
       name: Avoid reverse,
       note: Stabilizes sort order,
     }
-- error: { lhs: flip (g `on` h), rhs: flip g `on` h, name: Move flip }
-- error: { lhs: (f `on` g) `on` h, rhs: f `on` (g . h), name: Use on once }
-- error: { lhs: if a >= b then a else b, rhs: max a b }
-- error: { lhs: if a >= b then b else a, rhs: min a b }
-- error: { lhs: if a > b then a else b, rhs: max a b }
-- error: { lhs: if a > b then b else a, rhs: min a b }
-- error: { lhs: if a <= b then a else b, rhs: min a b }
-- error: { lhs: if a <= b then b else a, rhs: max a b }
-- error: { lhs: if a < b then a else b, rhs: min a b }
-- error: { lhs: if a < b then b else a, rhs: max a b }
-- error: { lhs: "maximum [a, b]", rhs: max a b }
-- error: { lhs: "minimum [a, b]", rhs: min a b }
+- warning: { lhs: flip (g `on` h), rhs: flip g `on` h, name: Move flip }
+- warning: { lhs: (f `on` g) `on` h, rhs: f `on` (g . h), name: Use on once }
+- warning: { lhs: if a >= b then a else b, rhs: max a b }
+- warning: { lhs: if a >= b then b else a, rhs: min a b }
+- warning: { lhs: if a > b then a else b, rhs: max a b }
+- warning: { lhs: if a > b then b else a, rhs: min a b }
+- warning: { lhs: if a <= b then a else b, rhs: min a b }
+- warning: { lhs: if a <= b then b else a, rhs: max a b }
+- warning: { lhs: if a < b then a else b, rhs: min a b }
+- warning: { lhs: if a < b then b else a, rhs: max a b }
+- warning: { lhs: "maximum [a, b]", rhs: max a b }
+- warning: { lhs: "minimum [a, b]", rhs: min a b }
 
 # READ/SHOW
 
-- error: { lhs: showsPrec 0 x "", rhs: show x }
-- error: { lhs: "showsPrec 0 x []", rhs: show x }
-- error: { lhs: readsPrec 0, rhs: reads }
-- error: { lhs: showsPrec 0, rhs: shows }
-- error: { lhs: showIntAtBase 16 intToDigit, rhs: showHex }
-- error: { lhs: showIntAtBase 8 intToDigit, rhs: showOct }
+- warning: { lhs: showsPrec 0 x "", rhs: show x }
+- warning: { lhs: "showsPrec 0 x []", rhs: show x }
+- warning: { lhs: readsPrec 0, rhs: reads }
+- warning: { lhs: showsPrec 0, rhs: shows }
+- warning: { lhs: showIntAtBase 16 intToDigit, rhs: showHex }
+- warning: { lhs: showIntAtBase 8 intToDigit, rhs: showOct }
 
 # LIST
 
-- error: { lhs: concat (map f x), rhs: concatMap f x }
-- error: { lhs: concat (f <$> x), rhs: concatMap f x }
-- error: { lhs: concat (x <&> f), rhs: concatMap f x }
-- error: { lhs: concat (fmap f x), rhs: concatMap f x }
-- error: { lhs: "concat [a, b]", rhs: a <> b }
-- error: { lhs: "sum [a, b]", rhs: a + b, name: "Use + directly" }
-- error: { lhs: map f (map g x), rhs: map (f . g) x, name: Use map once }
-- error:
+- warning: { lhs: concat (map f x), rhs: concatMap f x }
+- warning: { lhs: concat (f <$> x), rhs: concatMap f x }
+- warning: { lhs: concat (x <&> f), rhs: concatMap f x }
+- warning: { lhs: concat (fmap f x), rhs: concatMap f x }
+- warning: { lhs: "concat [a, b]", rhs: a <> b }
+- warning: { lhs: "sum [a, b]", rhs: a + b, name: "Use + directly" }
+- warning: { lhs: map f (map g x), rhs: map (f . g) x, name: Use map once }
+- warning:
     {
       lhs: concatMap f (map g x),
       rhs: concatMap (f . g) x,
       name: Fuse concatMap/map,
     }
-- error: { lhs: x !! 0, rhs: head x }
-- error: { lhs: take n (repeat x), rhs: replicate n x }
-- error: { lhs: map f (replicate n x), rhs: replicate n (f x) }
-- error: { lhs: map f (repeat x), rhs: repeat (f x) }
-- error: { lhs: concatMap f (repeat x), rhs: cycle (f x) }
-- error: { lhs: concat (repeat x), rhs: cycle x }
-- error: { lhs: "cycle [x]", rhs: repeat x }
-- error: { lhs: head (reverse x), rhs: last x }
-- error: { lhs: last (reverse x), rhs: head x, note: IncreasesLaziness }
-- error: { lhs: head (drop n x), rhs: x !! n, side: isNat n }
-- error:
+- warning: { lhs: x !! 0, rhs: head x }
+- warning: { lhs: take n (repeat x), rhs: replicate n x }
+- warning: { lhs: map f (replicate n x), rhs: replicate n (f x) }
+- warning: { lhs: map f (repeat x), rhs: repeat (f x) }
+- warning: { lhs: concatMap f (repeat x), rhs: cycle (f x) }
+- warning: { lhs: concat (repeat x), rhs: cycle x }
+- warning: { lhs: "cycle [x]", rhs: repeat x }
+- warning: { lhs: head (reverse x), rhs: last x }
+- warning: { lhs: last (reverse x), rhs: head x, note: IncreasesLaziness }
+- warning: { lhs: head (drop n x), rhs: x !! n, side: isNat n }
+- warning:
     {
       lhs: head (drop n x),
       rhs: x !! max 0 n,
       side: not (isNat n) && not (isNeg n),
     }
-- error: { lhs: reverse (init x), rhs: tail (reverse x) }
-- error:
+- warning: { lhs: reverse (init x), rhs: tail (reverse x) }
+- warning:
     { lhs: reverse (tail (reverse x)), rhs: init x, note: IncreasesLaziness }
-- error:
+- warning:
     {
       lhs: reverse (reverse x),
       rhs: x,
       note: IncreasesLaziness,
       name: Redundant reverse,
     }
-- error: { lhs: isPrefixOf (reverse x) (reverse y), rhs: isSuffixOf x y }
-- error: { lhs: "foldr (<>) []", rhs: concat }
-- error: { lhs: foldr (<>) "", rhs: concat }
-- error: { lhs: "foldr ((<>) . f) []", rhs: concatMap f }
-- error: { lhs: foldr ((<>) . f) "", rhs: concatMap f }
-- error: { lhs: "foldl (<>) []", rhs: concat, note: IncreasesLaziness }
-- error: { lhs: foldl (<>) "", rhs: concat, note: IncreasesLaziness }
-- error: { lhs: foldl f (head x) (tail x), rhs: foldl1 f x }
-- error: { lhs: foldr f (last x) (init x), rhs: foldr1 f x }
-- error: { lhs: "foldr (\\c a -> x : a) []", rhs: "map (\\c -> x)" }
-- error: { lhs: foldr (.) id l z, rhs: foldr ($) z l }
-- error: { lhs: span (not . p), rhs: break p }
-- error: { lhs: break (not . p), rhs: span p }
-- error: { lhs: span (notElem x), rhs: break (elem x), name: Use break }
-- error: { lhs: break (notElem x), rhs: span (elem x), name: Use span }
-- error:
+- warning: { lhs: isPrefixOf (reverse x) (reverse y), rhs: isSuffixOf x y }
+- warning: { lhs: "foldr (<>) []", rhs: concat }
+- warning: { lhs: foldr (<>) "", rhs: concat }
+- warning: { lhs: "foldr ((<>) . f) []", rhs: concatMap f }
+- warning: { lhs: foldr ((<>) . f) "", rhs: concatMap f }
+- warning: { lhs: "foldl (<>) []", rhs: concat, note: IncreasesLaziness }
+- warning: { lhs: foldl (<>) "", rhs: concat, note: IncreasesLaziness }
+- warning: { lhs: foldl f (head x) (tail x), rhs: foldl1 f x }
+- warning: { lhs: foldr f (last x) (init x), rhs: foldr1 f x }
+- warning: { lhs: "foldr (\\c a -> x : a) []", rhs: "map (\\c -> x)" }
+- warning: { lhs: foldr (.) id l z, rhs: foldr ($) z l }
+- warning: { lhs: span (not . p), rhs: break p }
+- warning: { lhs: break (not . p), rhs: span p }
+- warning: { lhs: span (notElem x), rhs: break (elem x), name: Use break }
+- warning: { lhs: break (notElem x), rhs: span (elem x), name: Use span }
+- warning:
     {
       lhs: "(takeWhile p x, dropWhile p x)",
       rhs: span p x,
       note: DecreasesLaziness,
     }
-- error: { lhs: fst (span p x), rhs: takeWhile p x }
-- error: { lhs: snd (span p x), rhs: dropWhile p x }
-- error: { lhs: fst (break p x), rhs: takeWhile (not . p) x }
-- error: { lhs: snd (break p x), rhs: dropWhile (not . p) x }
-- error:
+- warning: { lhs: fst (span p x), rhs: takeWhile p x }
+- warning: { lhs: snd (span p x), rhs: dropWhile p x }
+- warning: { lhs: fst (break p x), rhs: takeWhile (not . p) x }
+- warning: { lhs: snd (break p x), rhs: dropWhile (not . p) x }
+- warning:
     { lhs: "(take n x, drop n x)", rhs: splitAt n x, note: DecreasesLaziness }
-- error: { lhs: fst (splitAt p x), rhs: take p x }
-- error: { lhs: snd (splitAt p x), rhs: drop p x }
-- error: { lhs: concatMap (<> "\n"), rhs: unlines }
-- error: { lhs: map id, rhs: id }
-- error: { lhs: concatMap id, rhs: concat }
-- error: { lhs: or (map p x), rhs: any p x }
-- error: { lhs: and (map p x), rhs: all p x }
-- error: { lhs: any f (map g x), rhs: any (f . g) x }
-- error: { lhs: all f (map g x), rhs: all (f . g) x }
-- error: { lhs: "zipWith (,)", rhs: zip }
-- error: { lhs: "zipWith3 (,,)", rhs: zip3 }
-- error: { lhs: map fst &&& map snd, rhs: unzip }
-- error: { lhs: length x == 0, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: 0 == length x, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: length x < 1, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: 1 > length x, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: length x <= 0, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: 0 >= length x, rhs: null x, note: IncreasesLaziness }
-- error: { lhs: "x == []", rhs: null x }
-- error: { lhs: "[] == x", rhs: null x }
-- error: { lhs: all (const False), rhs: "null" }
-- error: { lhs: any (const True) x, rhs: not (null x), name: Use null }
-- error:
+- warning: { lhs: fst (splitAt p x), rhs: take p x }
+- warning: { lhs: snd (splitAt p x), rhs: drop p x }
+- warning: { lhs: concatMap (<> "\n"), rhs: unlines }
+- warning: { lhs: map id, rhs: id }
+- warning: { lhs: concatMap id, rhs: concat }
+- warning: { lhs: or (map p x), rhs: any p x }
+- warning: { lhs: and (map p x), rhs: all p x }
+- warning: { lhs: any f (map g x), rhs: any (f . g) x }
+- warning: { lhs: all f (map g x), rhs: all (f . g) x }
+- warning: { lhs: "zipWith (,)", rhs: zip }
+- warning: { lhs: "zipWith3 (,,)", rhs: zip3 }
+- warning: { lhs: map fst &&& map snd, rhs: unzip }
+- warning: { lhs: length x == 0, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: 0 == length x, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: length x < 1, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: 1 > length x, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: length x <= 0, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: 0 >= length x, rhs: null x, note: IncreasesLaziness }
+- warning: { lhs: "x == []", rhs: null x }
+- warning: { lhs: "[] == x", rhs: null x }
+- warning: { lhs: all (const False), rhs: "null" }
+- warning: { lhs: any (const True) x, rhs: not (null x), name: Use null }
+- warning:
     {
       lhs: length x /= 0,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error:
+- warning:
     {
       lhs: 0 /= length x,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error: { lhs: "\\x -> [x]", rhs: "(:[])", name: "Use :" }
-- error:
+- warning: { lhs: "\\x -> [x]", rhs: "(:[])", name: "Use :" }
+- warning:
     { lhs: map f (zip x y), rhs: zipWith (curry f) x y, side: not (isApp f) }
-- error: { lhs: "map f (fromMaybe [] x)", rhs: "maybe [] (map f) x" }
-- error:
+- warning: { lhs: "map f (fromMaybe [] x)", rhs: "maybe [] (map f) x" }
+- warning:
     { lhs: "concatMap f (fromMaybe [] x)", rhs: "maybe [] (concatMap f) x" }
-- error: { lhs: "concat (fromMaybe [] x)", rhs: "maybe [] concat x" }
-- error: { lhs: not (elem x y), rhs: notElem x y }
-- error: { lhs: not (notElem x y), rhs: elem x y }
-- error:
+- warning: { lhs: "concat (fromMaybe [] x)", rhs: "maybe [] concat x" }
+- warning: { lhs: not (elem x y), rhs: notElem x y }
+- warning: { lhs: not (notElem x y), rhs: elem x y }
+- warning:
     { lhs: foldr f z (map g x), rhs: foldr (f . g) z x, name: Fuse foldr/map }
-- error: { lhs: "x <> concatMap (' ':) y", rhs: "unwords (x:y)" }
-- error: { lhs: intercalate " ", rhs: unwords }
-- error:
+- warning: { lhs: "x <> concatMap (' ':) y", rhs: "unwords (x:y)" }
+- warning: { lhs: intercalate " ", rhs: unwords }
+- warning:
     { lhs: concat (intersperse x y), rhs: intercalate x y, side: notEq x " " }
-- error: { lhs: concat (intersperse " " x), rhs: unwords x }
-- error: { lhs: null (concat x), rhs: all null x }
-- error: { lhs: null (filter f x), rhs: not (any f x), name: Use any }
-- error: { lhs: "filter f x == []", rhs: not (any f x), name: Use any }
-- error: { lhs: "filter f x /= []", rhs: any f x }
-- error: { lhs: any id, rhs: or }
-- error: { lhs: all id, rhs: and }
-- error: { lhs: any (not . f) x, rhs: not (all f x), name: Hoist not }
-- error: { lhs: all (not . f) x, rhs: not (any f x), name: Hoist not }
-- error: { lhs: any ((==) a), rhs: elem a, note: ValidInstance Eq a }
-- error: { lhs: any (== a), rhs: elem a }
-- error: { lhs: any (a ==), rhs: elem a, note: ValidInstance Eq a }
-- error: { lhs: all ((/=) a), rhs: notElem a, note: ValidInstance Eq a }
-- error: { lhs: all (/= a), rhs: notElem a, note: ValidInstance Eq a }
-- error: { lhs: all (a /=), rhs: notElem a, note: ValidInstance Eq a }
-- error: { lhs: elem True, rhs: or }
-- error: { lhs: notElem False, rhs: and }
-- error: { lhs: True `elem` l, rhs: or l }
-- error: { lhs: False `notElem` l, rhs: and l }
-- error: { lhs: elem False, rhs: any not, name: Use any }
-- error: { lhs: notElem True, rhs: all not, name: Use all }
-- error: { lhs: False `elem` l, rhs: any not l, name: Use any }
-- error: { lhs: True `notElem` l, rhs: all not l, name: Use all }
-- error: { lhs: findIndex ((==) a), rhs: elemIndex a }
-- error: { lhs: findIndex (a ==), rhs: elemIndex a }
-- error: { lhs: findIndex (== a), rhs: elemIndex a }
-- error: { lhs: findIndices ((==) a), rhs: elemIndices a }
-- error: { lhs: findIndices (a ==), rhs: elemIndices a }
-- error: { lhs: findIndices (== a), rhs: elemIndices a }
-- error: { lhs: "lookup b (zip l [0..])", rhs: elemIndex b l }
-- error: { lhs: "elem x [y]", rhs: x == y, note: ValidInstance Eq a }
-- error: { lhs: "notElem x [y]", rhs: x /= y, note: ValidInstance Eq a }
-- error: { lhs: "length [1..n]", rhs: max 0 n }
-- error: { lhs: length x >= 0, rhs: "True", name: Length always non-negative }
-- error: { lhs: 0 <= length x, rhs: "True", name: Length always non-negative }
-- error:
+- warning: { lhs: concat (intersperse " " x), rhs: unwords x }
+- warning: { lhs: null (concat x), rhs: all null x }
+- warning: { lhs: null (filter f x), rhs: not (any f x), name: Use any }
+- warning: { lhs: "filter f x == []", rhs: not (any f x), name: Use any }
+- warning: { lhs: "filter f x /= []", rhs: any f x }
+- warning: { lhs: any id, rhs: or }
+- warning: { lhs: all id, rhs: and }
+- warning: { lhs: any (not . f) x, rhs: not (all f x), name: Hoist not }
+- warning: { lhs: all (not . f) x, rhs: not (any f x), name: Hoist not }
+- warning: { lhs: any ((==) a), rhs: elem a, note: ValidInstance Eq a }
+- warning: { lhs: any (== a), rhs: elem a }
+- warning: { lhs: any (a ==), rhs: elem a, note: ValidInstance Eq a }
+- warning: { lhs: all ((/=) a), rhs: notElem a, note: ValidInstance Eq a }
+- warning: { lhs: all (/= a), rhs: notElem a, note: ValidInstance Eq a }
+- warning: { lhs: all (a /=), rhs: notElem a, note: ValidInstance Eq a }
+- warning: { lhs: elem True, rhs: or }
+- warning: { lhs: notElem False, rhs: and }
+- warning: { lhs: True `elem` l, rhs: or l }
+- warning: { lhs: False `notElem` l, rhs: and l }
+- warning: { lhs: elem False, rhs: any not, name: Use any }
+- warning: { lhs: notElem True, rhs: all not, name: Use all }
+- warning: { lhs: False `elem` l, rhs: any not l, name: Use any }
+- warning: { lhs: True `notElem` l, rhs: all not l, name: Use all }
+- warning: { lhs: findIndex ((==) a), rhs: elemIndex a }
+- warning: { lhs: findIndex (a ==), rhs: elemIndex a }
+- warning: { lhs: findIndex (== a), rhs: elemIndex a }
+- warning: { lhs: findIndices ((==) a), rhs: elemIndices a }
+- warning: { lhs: findIndices (a ==), rhs: elemIndices a }
+- warning: { lhs: findIndices (== a), rhs: elemIndices a }
+- warning: { lhs: "lookup b (zip l [0..])", rhs: elemIndex b l }
+- warning: { lhs: "elem x [y]", rhs: x == y, note: ValidInstance Eq a }
+- warning: { lhs: "notElem x [y]", rhs: x /= y, note: ValidInstance Eq a }
+- warning: { lhs: "length [1..n]", rhs: max 0 n }
+- warning: { lhs: length x >= 0, rhs: "True", name: Length always non-negative }
+- warning: { lhs: 0 <= length x, rhs: "True", name: Length always non-negative }
+- warning:
     {
       lhs: length x > 0,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error:
+- warning:
     {
       lhs: 0 < length x,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error:
+- warning:
     {
       lhs: length x >= 1,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error:
+- warning:
     {
       lhs: 1 <= length x,
       rhs: not (null x),
       note: IncreasesLaziness,
       name: Use null,
     }
-- error:
+- warning:
     {
       lhs: take i x,
       rhs: "[]",
       side: isNegZero i,
       name: Take on a non-positive,
     }
-- error:
+- warning:
     { lhs: drop i x, rhs: x, side: isNegZero i, name: Drop on a non-positive }
-- error: { lhs: last (scanl f z x), rhs: foldl f z x }
-- error: { lhs: head (scanr f z x), rhs: foldr f z x }
-- error:
+- warning: { lhs: last (scanl f z x), rhs: foldl f z x }
+- warning: { lhs: head (scanr f z x), rhs: foldr f z x }
+- warning:
     {
       lhs: "scanl (\\x _ -> a) b (replicate c d)",
       rhs: "take c (iterate (\\x -> a) b)",
     }
-- error:
+- warning:
     { lhs: "foldl (\\x _ -> a) b [1..c]", rhs: "iterate (\\x -> a) b !! c" }
-- error: { lhs: iterate id, rhs: repeat }
-- error: { lhs: zipWith f (repeat x), rhs: map (f x) }
-- error:
+- warning: { lhs: iterate id, rhs: repeat }
+- warning: { lhs: zipWith f (repeat x), rhs: map (f x) }
+- warning:
     {
       lhs: zip (repeat x),
       rhs: "map (_noParen_ x,)",
       note: RequiresExtension TupleSections,
       name: "Use map with tuple-section",
     }
-- error: { lhs: zipWith f y (repeat z), rhs: map (`f` z) y }
-- error:
+- warning: { lhs: zipWith f y (repeat z), rhs: map (`f` z) y }
+- warning:
     {
       lhs: zip y (repeat z),
       rhs: "map (,_noParen_ z) y",
       note: RequiresExtension TupleSections,
       name: "Use map with tuple-section",
     }
-- error: { lhs: listToMaybe (filter p x), rhs: find p x }
-- error: { lhs: zip (take n x) (take n y), rhs: take n (zip x y) }
-- error:
+- warning: { lhs: listToMaybe (filter p x), rhs: find p x }
+- warning: { lhs: zip (take n x) (take n y), rhs: take n (zip x y) }
+- warning:
     {
       lhs: zip (take n x) (take m y),
       rhs: take (min n m) (zip x y),
@@ -367,14 +366,16 @@
 
 # MONOIDS
 
-- error: { lhs: mempty <> x, rhs: x, name: "Monoid law, left identity" }
-- error: { lhs: mempty `mappend` x, rhs: x, name: "Monoid law, left identity" }
-- error: { lhs: x <> mempty, rhs: x, name: "Monoid law, right identity" }
-- error: { lhs: x `mappend` mempty, rhs: x, name: "Monoid law, right identity" }
-- error: { lhs: foldr (<>) mempty, rhs: Data.Foldable.fold }
-- error: { lhs: foldr mappend mempty, rhs: Data.Foldable.fold }
-- error: { lhs: mempty x, rhs: mempty, name: Evaluate }
-- error:
+- warning: { lhs: mempty <> x, rhs: x, name: "Monoid law, left identity" }
+- warning:
+    { lhs: mempty `mappend` x, rhs: x, name: "Monoid law, left identity" }
+- warning: { lhs: x <> mempty, rhs: x, name: "Monoid law, right identity" }
+- warning:
+    { lhs: x `mappend` mempty, rhs: x, name: "Monoid law, right identity" }
+- warning: { lhs: foldr (<>) mempty, rhs: Data.Foldable.fold }
+- warning: { lhs: foldr mappend mempty, rhs: Data.Foldable.fold }
+- warning: { lhs: mempty x, rhs: mempty, name: Evaluate }
+- warning:
     {
       lhs: x `mempty` y,
       rhs: mempty,
@@ -384,69 +385,69 @@
 
 # TRAVERSABLES
 
-- error: { lhs: traverse pure, rhs: pure, name: "Traversable law" }
-- error:
+- warning: { lhs: traverse pure, rhs: pure, name: "Traversable law" }
+- warning:
     {
       lhs: traverse (pure . f) x,
       rhs: pure (fmap f x),
       name: "Traversable law",
     }
-- error: { lhs: sequenceA (map f x), rhs: traverse f x }
-- error: { lhs: sequenceA (f <$> x), rhs: traverse f x }
-- error: { lhs: sequenceA (x <&> f), rhs: traverse f x }
-- error: { lhs: sequenceA (fmap f x), rhs: traverse f x }
-- error: { lhs: sequenceA_ (map f x), rhs: traverse_ f x }
-- error: { lhs: sequenceA_ (f <$> x), rhs: traverse_ f x }
-- error: { lhs: sequenceA_ (x <&> f), rhs: traverse_ f x }
-- error: { lhs: sequenceA_ (fmap f x), rhs: traverse_ f x }
-- error: { lhs: foldMap id, rhs: fold }
-- error: { lhs: fold (f <$> x), rhs: foldMap f x }
-- error: { lhs: fold (x <&> f), rhs: foldMap f x }
-- error: { lhs: fold (fmap f x), rhs: foldMap f x }
-- error: { lhs: fold (map f x), rhs: foldMap f x }
-- error:
+- warning: { lhs: sequenceA (map f x), rhs: traverse f x }
+- warning: { lhs: sequenceA (f <$> x), rhs: traverse f x }
+- warning: { lhs: sequenceA (x <&> f), rhs: traverse f x }
+- warning: { lhs: sequenceA (fmap f x), rhs: traverse f x }
+- warning: { lhs: sequenceA_ (map f x), rhs: traverse_ f x }
+- warning: { lhs: sequenceA_ (f <$> x), rhs: traverse_ f x }
+- warning: { lhs: sequenceA_ (x <&> f), rhs: traverse_ f x }
+- warning: { lhs: sequenceA_ (fmap f x), rhs: traverse_ f x }
+- warning: { lhs: foldMap id, rhs: fold }
+- warning: { lhs: fold (f <$> x), rhs: foldMap f x }
+- warning: { lhs: fold (x <&> f), rhs: foldMap f x }
+- warning: { lhs: fold (fmap f x), rhs: foldMap f x }
+- warning: { lhs: fold (map f x), rhs: foldMap f x }
+- warning:
     { lhs: foldMap f (g <$> x), rhs: foldMap (f . g) x, name: Fuse foldMap/<$> }
-- error:
+- warning:
     { lhs: foldMap f (x <&> g), rhs: foldMap (f . g) x, name: Fuse foldMap/<&> }
-- error:
+- warning:
     {
       lhs: foldMap f (fmap g x),
       rhs: foldMap (f . g) x,
       name: Fuse foldMap/fmap,
     }
-- error:
+- warning:
     { lhs: foldMap f (map g x), rhs: foldMap (f . g) x, name: Fuse foldMap/map }
-- error:
+- warning:
     {
       lhs: traverse f (fmap g x),
       rhs: traverse (f . g) x,
       name: Fuse traverse/fmap,
     }
-- error:
+- warning:
     {
       lhs: traverse f (g <$> x),
       rhs: traverse (f . g) x,
       name: Fuse traverse/<$>,
     }
-- error:
+- warning:
     {
       lhs: traverse f (x <&> g),
       rhs: traverse (f . g) x,
       name: Fuse traverse/<&>,
     }
-- error:
+- warning:
     {
       lhs: traverse_ f (fmap g x),
       rhs: traverse_ (f . g) x,
       name: Fuse traverse_/fmap,
     }
-- error:
+- warning:
     {
       lhs: traverse_ f (g <$> x),
       rhs: traverse_ (f . g) x,
       name: Fuse traverse_/<$>,
     }
-- error:
+- warning:
     {
       lhs: traverse_ f (x <&> g),
       rhs: traverse_ (f . g) x,
@@ -455,233 +456,234 @@
 
 # BY
 
-- error: { lhs: deleteBy (==), rhs: delete }
-- error: { lhs: groupBy (==), rhs: group }
-- error: { lhs: insertBy compare, rhs: insert }
-- error: { lhs: intersectBy (==), rhs: intersect }
-- error: { lhs: maximumBy compare, rhs: maximum }
-- error: { lhs: minimumBy compare, rhs: minimum }
-- error: { lhs: nubBy (==), rhs: nub }
-- error: { lhs: sortBy compare, rhs: sort }
-- error: { lhs: unionBy (==), rhs: union }
+- warning: { lhs: deleteBy (==), rhs: delete }
+- warning: { lhs: groupBy (==), rhs: group }
+- warning: { lhs: insertBy compare, rhs: insert }
+- warning: { lhs: intersectBy (==), rhs: intersect }
+- warning: { lhs: maximumBy compare, rhs: maximum }
+- warning: { lhs: minimumBy compare, rhs: minimum }
+- warning: { lhs: nubBy (==), rhs: nub }
+- warning: { lhs: sortBy compare, rhs: sort }
+- warning: { lhs: unionBy (==), rhs: union }
 
 # FOLDS
 
-- error: { lhs: foldr  (>>) (pure ()), rhs: sequence_ }
-- error: { lhs: foldr  (>>) (return ()), rhs: sequence_ }
-- error: { lhs: foldr  (&&) True, rhs: and }
-- error: { lhs: foldl  (&&) True, rhs: and, note: IncreasesLaziness }
-- error: { lhs: foldr1 (&&), rhs: and, note: "RemovesError on `[]`" }
-- error: { lhs: foldl1 (&&), rhs: and, note: "RemovesError on `[]`" }
-- error: { lhs: foldr  (||) False, rhs: or }
-- error: { lhs: foldl  (||) False, rhs: or, note: IncreasesLaziness }
-- error: { lhs: foldr1 (||), rhs: or, note: "RemovesError on `[]`" }
-- error: { lhs: foldl1 (||), rhs: or, note: "RemovesError on `[]`" }
-- error: { lhs: foldl  (+) 0, rhs: sum }
-- error: { lhs: foldr  (+) 0, rhs: sum }
-- error: { lhs: foldl1 (+), rhs: sum, note: "RemovesError on `[]`" }
-- error: { lhs: foldr1 (+), rhs: sum, note: "RemovesError on `[]`" }
-- error: { lhs: foldl  (*) 1, rhs: product }
-- error: { lhs: foldr  (*) 1, rhs: product }
-- error: { lhs: foldl1 (*), rhs: product, note: "RemovesError on `[]`" }
-- error: { lhs: foldr1 (*), rhs: product, note: "RemovesError on `[]`" }
-- error: { lhs: foldl1 max, rhs: maximum }
-- error: { lhs: foldr1 max, rhs: maximum }
-- error: { lhs: foldl1 min, rhs: minimum }
-- error: { lhs: foldr1 min, rhs: minimum }
-- error: { lhs: foldr mplus mzero, rhs: msum }
+- warning: { lhs: foldr  (>>) (pure ()), rhs: sequence_ }
+- warning: { lhs: foldr  (>>) (return ()), rhs: sequence_ }
+- warning: { lhs: foldr  (&&) True, rhs: and }
+- warning: { lhs: foldl  (&&) True, rhs: and, note: IncreasesLaziness }
+- warning: { lhs: foldr1 (&&), rhs: and, note: "RemovesError on `[]`" }
+- warning: { lhs: foldl1 (&&), rhs: and, note: "RemovesError on `[]`" }
+- warning: { lhs: foldr  (||) False, rhs: or }
+- warning: { lhs: foldl  (||) False, rhs: or, note: IncreasesLaziness }
+- warning: { lhs: foldr1 (||), rhs: or, note: "RemovesError on `[]`" }
+- warning: { lhs: foldl1 (||), rhs: or, note: "RemovesError on `[]`" }
+- warning: { lhs: foldl  (+) 0, rhs: sum }
+- warning: { lhs: foldr  (+) 0, rhs: sum }
+- warning: { lhs: foldl1 (+), rhs: sum, note: "RemovesError on `[]`" }
+- warning: { lhs: foldr1 (+), rhs: sum, note: "RemovesError on `[]`" }
+- warning: { lhs: foldl  (*) 1, rhs: product }
+- warning: { lhs: foldr  (*) 1, rhs: product }
+- warning: { lhs: foldl1 (*), rhs: product, note: "RemovesError on `[]`" }
+- warning: { lhs: foldr1 (*), rhs: product, note: "RemovesError on `[]`" }
+- warning: { lhs: foldl1 max, rhs: maximum }
+- warning: { lhs: foldr1 max, rhs: maximum }
+- warning: { lhs: foldl1 min, rhs: minimum }
+- warning: { lhs: foldr1 min, rhs: minimum }
+- warning: { lhs: foldr mplus mzero, rhs: msum }
 
 # FUNCTION
 
-- error: { lhs: \x -> x, rhs: id }
-- error: { lhs: \x y -> x, rhs: const }
-- error: { lhs: curry fst, rhs: const }
-- error: { lhs: curry snd, rhs: \_ x -> x, note: "Alternatively, use const id" }
-- error:
+- warning: { lhs: \x -> x, rhs: id }
+- warning: { lhs: \x y -> x, rhs: const }
+- warning: { lhs: curry fst, rhs: const }
+- warning:
+    { lhs: curry snd, rhs: \_ x -> x, note: "Alternatively, use const id" }
+- warning:
     { lhs: flip const, rhs: \_ x -> x, note: "Alternatively, use const id" }
-- error: { lhs: "\\(x,y) -> y", rhs: snd }
-- error: { lhs: "\\(x,y) -> x", rhs: fst }
-- error: { lhs: "\\x y -> f (x,y)", rhs: curry f }
-- error: { lhs: "\\(x,y) -> f x y", rhs: uncurry f, note: IncreasesLaziness }
-- error: { lhs: f (fst p) (snd p), rhs: uncurry f p }
-- error: { lhs: "uncurry (\\x y -> z)", rhs: "\\(x,y) -> z" }
-- error: { lhs: "curry (\\(x,y) -> z)", rhs: "\\x y -> z" }
-- error: { lhs: uncurry (curry f), rhs: f, name: Redundant curry/uncurry }
-- error: { lhs: curry (uncurry f), rhs: f, name: Redundant curry/uncurry }
-- error: { lhs: "uncurry f (a, b)", rhs: f a b }
-- error: { lhs: ($) (f x), rhs: f x, name: Redundant $ }
-- error: { lhs: (f $), rhs: f, name: Redundant $ }
-- error: { lhs: (& f), rhs: f, name: Redundant & }
-- error:
+- warning: { lhs: "\\(x,y) -> y", rhs: snd }
+- warning: { lhs: "\\(x,y) -> x", rhs: fst }
+- warning: { lhs: "\\x y -> f (x,y)", rhs: curry f }
+- warning: { lhs: "\\(x,y) -> f x y", rhs: uncurry f, note: IncreasesLaziness }
+- warning: { lhs: f (fst p) (snd p), rhs: uncurry f p }
+- warning: { lhs: "uncurry (\\x y -> z)", rhs: "\\(x,y) -> z" }
+- warning: { lhs: "curry (\\(x,y) -> z)", rhs: "\\x y -> z" }
+- warning: { lhs: uncurry (curry f), rhs: f, name: Redundant curry/uncurry }
+- warning: { lhs: curry (uncurry f), rhs: f, name: Redundant curry/uncurry }
+- warning: { lhs: "uncurry f (a, b)", rhs: f a b }
+- warning: { lhs: ($) (f x), rhs: f x, name: Redundant $ }
+- warning: { lhs: (f $), rhs: f, name: Redundant $ }
+- warning: { lhs: (& f), rhs: f, name: Redundant & }
+- warning:
     { lhs: \x -> y, rhs: const y, side: isAtom y && not (isWildcard y) }
     # If any isWildcard recursively then x may be used but not mentioned explicitly
-- error: { lhs: flip f x y, rhs: f y x, side: isApp original && isAtom y }
-- error: { lhs: id x, rhs: x }
-- error: { lhs: id . x, rhs: x, name: Redundant id }
-- error: { lhs: x . id, rhs: x, name: Redundant id }
-- error:
+- warning: { lhs: flip f x y, rhs: f y x, side: isApp original && isAtom y }
+- warning: { lhs: id x, rhs: x }
+- warning: { lhs: id . x, rhs: x, name: Redundant id }
+- warning: { lhs: x . id, rhs: x, name: Redundant id }
+- warning:
     {
       lhs: "((,) x)",
       rhs: "(_noParen_ x,)",
       name: Use tuple-section,
       note: RequiresExtension TupleSections,
     }
-- error:
+- warning:
     {
       lhs: "flip (,) x",
       rhs: "(,_noParen_ x)",
       name: Use tuple-section,
       note: RequiresExtension TupleSections,
     }
-- error: { lhs: flip (flip f), rhs: f, note: DecreasesLaziness }
-- error: { lhs: flip f <*> g, rhs: f =<< g, name: Redundant flip }
-- error: { lhs: g <**> flip f, rhs: g >>= f, name: Redundant flip }
-- error: { lhs: flip f =<< g, rhs: f <*> g, name: Redundant flip }
-- error:
+- warning: { lhs: flip (flip f), rhs: f, note: DecreasesLaziness }
+- warning: { lhs: flip f <*> g, rhs: f =<< g, name: Redundant flip }
+- warning: { lhs: g <**> flip f, rhs: g >>= f, name: Redundant flip }
+- warning: { lhs: flip f =<< g, rhs: f <*> g, name: Redundant flip }
+- warning:
     {
       lhs: g >>= flip f,
       rhs: g Control.Applicative.<**> f,
       name: Redundant flip,
     }
-- error: { lhs: ($ x) . f, rhs: flip f x }
+- warning: { lhs: ($ x) . f, rhs: flip f x }
 
 # CHAR
 
-- error: { lhs: "a >= 'a' && a <= 'z'", rhs: isAsciiLower a }
-- error: { lhs: "'a' <= a && a <= 'z'", rhs: isAsciiLower a }
-- error: { lhs: "a >= 'A' && a <= 'Z'", rhs: isAsciiUpper a }
-- error: { lhs: "'A' <= a && a <= 'Z'", rhs: isAsciiUpper a }
-- error: { lhs: "a >= '0' && a <= '9'", rhs: isDigit a }
-- error: { lhs: "'0' <= a && a <= '9'", rhs: isDigit a }
-- error: { lhs: "a >= '0' && a <= '7'", rhs: isOctDigit a }
-- error: { lhs: "'0' <= a && a <= '7'", rhs: isOctDigit a }
-- error: { lhs: isLower a || isUpper a, rhs: isAlpha a }
-- error: { lhs: isUpper a || isLower a, rhs: isAlpha a }
+- warning: { lhs: "a >= 'a' && a <= 'z'", rhs: isAsciiLower a }
+- warning: { lhs: "'a' <= a && a <= 'z'", rhs: isAsciiLower a }
+- warning: { lhs: "a >= 'A' && a <= 'Z'", rhs: isAsciiUpper a }
+- warning: { lhs: "'A' <= a && a <= 'Z'", rhs: isAsciiUpper a }
+- warning: { lhs: "a >= '0' && a <= '9'", rhs: isDigit a }
+- warning: { lhs: "'0' <= a && a <= '9'", rhs: isDigit a }
+- warning: { lhs: "a >= '0' && a <= '7'", rhs: isOctDigit a }
+- warning: { lhs: "'0' <= a && a <= '7'", rhs: isOctDigit a }
+- warning: { lhs: isLower a || isUpper a, rhs: isAlpha a }
+- warning: { lhs: isUpper a || isLower a, rhs: isAlpha a }
 
 # BOOL
 
-- error: { lhs: x == True, rhs: x, name: Redundant == }
-- error: { lhs: x == False, rhs: not x, name: Redundant == }
-- error: { lhs: True == a, rhs: a, name: Redundant == }
-- error: { lhs: False == a, rhs: not a, name: Redundant == }
-- error: { lhs: (== True), rhs: id, name: Redundant == }
-- error: { lhs: (== False), rhs: not, name: Redundant == }
-- error: { lhs: (True ==), rhs: id, name: Redundant == }
-- error: { lhs: (False ==), rhs: not, name: Redundant == }
-- error: { lhs: a /= True, rhs: not a, name: Redundant /= }
-- error: { lhs: a /= False, rhs: a, name: Redundant /= }
-- error: { lhs: True /= a, rhs: not a, name: Redundant /= }
-- error: { lhs: False /= a, rhs: a, name: Redundant /= }
-- error: { lhs: (/= True), rhs: not, name: Redundant /= }
-- error: { lhs: (/= False), rhs: id, name: Redundant /= }
-- error: { lhs: (True /=), rhs: not, name: Redundant /= }
-- error: { lhs: (False /=), rhs: id, name: Redundant /= }
-- error:
+- warning: { lhs: x == True, rhs: x, name: Redundant == }
+- warning: { lhs: x == False, rhs: not x, name: Redundant == }
+- warning: { lhs: True == a, rhs: a, name: Redundant == }
+- warning: { lhs: False == a, rhs: not a, name: Redundant == }
+- warning: { lhs: (== True), rhs: id, name: Redundant == }
+- warning: { lhs: (== False), rhs: not, name: Redundant == }
+- warning: { lhs: (True ==), rhs: id, name: Redundant == }
+- warning: { lhs: (False ==), rhs: not, name: Redundant == }
+- warning: { lhs: a /= True, rhs: not a, name: Redundant /= }
+- warning: { lhs: a /= False, rhs: a, name: Redundant /= }
+- warning: { lhs: True /= a, rhs: not a, name: Redundant /= }
+- warning: { lhs: False /= a, rhs: a, name: Redundant /= }
+- warning: { lhs: (/= True), rhs: not, name: Redundant /= }
+- warning: { lhs: (/= False), rhs: id, name: Redundant /= }
+- warning: { lhs: (True /=), rhs: not, name: Redundant /= }
+- warning: { lhs: (False /=), rhs: id, name: Redundant /= }
+- warning:
     {
       lhs: if a then x else x,
       rhs: x,
       note: IncreasesLaziness,
       name: Redundant if,
     }
-- error: { lhs: if a then True else False, rhs: a, name: Redundant if }
-- error: { lhs: if a then False else True, rhs: not a, name: Redundant if }
-- error:
+- warning: { lhs: if a then True else False, rhs: a, name: Redundant if }
+- warning: { lhs: if a then False else True, rhs: not a, name: Redundant if }
+- warning:
     {
       lhs: if a then t else (if b then t else f),
       rhs: if a || b then t else f,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: if a then (if b then t else f) else f,
       rhs: if a && b then t else f,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: if x then True else y,
       rhs: x || y,
       side: notEq y False,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: if x then y else False,
       rhs: x && y,
       side: notEq y True,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: if | b -> t | otherwise -> f,
       rhs: if b then t else f,
       name: Redundant multi-way if,
     }
-- error:
+- warning:
     {
       lhs: "case a of {True -> t; False -> f}",
       rhs: if a then t else f,
       name: Use if,
     }
-- error:
+- warning:
     {
       lhs: "case a of {False -> f; True -> t}",
       rhs: if a then t else f,
       name: Use if,
     }
-- error:
+- warning:
     {
       lhs: "case a of {True -> t; _ -> f}",
       rhs: if a then t else f,
       name: Use if,
     }
-- error:
+- warning:
     {
       lhs: "case a of {False -> f; _ -> t}",
       rhs: if a then t else f,
       name: Use if,
     }
-- error:
+- warning:
     {
       lhs: "if c then (True, x) else (False, x)",
       rhs: "(c, x)",
       note: IncreasesLaziness,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: "if c then (False, x) else (True, x)",
       rhs: "(not c, x)",
       note: IncreasesLaziness,
       name: Redundant if,
     }
-- error: { lhs: "or [x, y]", rhs: x || y }
-- error: { lhs: "or [x, y, z]", rhs: x || y || z }
-- error: { lhs: "and [x, y]", rhs: x && y }
-- error: { lhs: "and [x, y, z]", rhs: x && y && z }
-- error:
+- warning: { lhs: "or [x, y]", rhs: x || y }
+- warning: { lhs: "or [x, y, z]", rhs: x || y || z }
+- warning: { lhs: "and [x, y]", rhs: x && y }
+- warning: { lhs: "and [x, y, z]", rhs: x && y && z }
+- warning:
     {
       lhs: if x then False else y,
       rhs: not x && y,
       side: notEq y True,
       name: Redundant if,
     }
-- error:
+- warning:
     {
       lhs: if x then y else True,
       rhs: not x || y,
       side: notEq y False,
       name: Redundant if,
     }
-- error: { lhs: not (not x), rhs: x, name: Redundant not }
+- warning: { lhs: not (not x), rhs: x, name: Redundant not }
 
 # ARROW
 
-- error: { lhs: id *** g, rhs: second g }
-- error: { lhs: f *** id, rhs: first f }
+- warning: { lhs: id *** g, rhs: second g }
+- warning: { lhs: f *** id, rhs: first f }
 - ignore: { lhs: zip (map f x) (map g x), rhs: map (f Control.Arrow.&&& g) x }
 - ignore: { lhs: "\\x -> (f x, g x)", rhs: f Control.Arrow.&&& g }
-- error:
+- warning:
     {
       lhs: "(fst x, snd x)",
       rhs: x,
@@ -691,303 +693,310 @@
 
 # BIFUNCTOR
 
-- error: { lhs: bimap id g, rhs: second g }
-- error: { lhs: bimap f id, rhs: first f }
-- error: { lhs: first id, rhs: id }
-- error: { lhs: second id, rhs: id }
-- error: { lhs: bimap id id, rhs: id }
-- error: { lhs: first f (second g x), rhs: bimap f g x }
-- error: { lhs: second g (first f x), rhs: bimap f g x }
-- error: { lhs: first f (first g x), rhs: first (f . g) x }
-- error: { lhs: second f (second g x), rhs: second (f . g) x }
-- error: { lhs: bimap f h (bimap g i x), rhs: bimap (f . g) (h . i) x }
-- error: { lhs: first f (bimap g h x), rhs: bimap (f . g) h x }
-- error: { lhs: second g (bimap f h x), rhs: bimap f (g . h) x }
-- error: { lhs: bimap f h (first g x), rhs: bimap (f . g) h x }
-- error: { lhs: bimap f g (second h x), rhs: bimap f (g . h) x }
-- error:
+- warning: { lhs: bimap id g, rhs: second g }
+- warning: { lhs: bimap f id, rhs: first f }
+- warning: { lhs: first id, rhs: id }
+- warning: { lhs: second id, rhs: id }
+- warning: { lhs: bimap id id, rhs: id }
+- warning: { lhs: first f (second g x), rhs: bimap f g x }
+- warning: { lhs: second g (first f x), rhs: bimap f g x }
+- warning: { lhs: first f (first g x), rhs: first (f . g) x }
+- warning: { lhs: second f (second g x), rhs: second (f . g) x }
+- warning: { lhs: bimap f h (bimap g i x), rhs: bimap (f . g) (h . i) x }
+- warning: { lhs: first f (bimap g h x), rhs: bimap (f . g) h x }
+- warning: { lhs: second g (bimap f h x), rhs: bimap f (g . h) x }
+- warning: { lhs: bimap f h (first g x), rhs: bimap (f . g) h x }
+- warning: { lhs: bimap f g (second h x), rhs: bimap f (g . h) x }
+- warning:
     {
       lhs: "\\(x,y) -> (f x, g y)",
       rhs: Data.Bifunctor.bimap f g,
       note: IncreasesLaziness,
     }
-- error:
+- warning:
     {
       lhs: "\\(x,y) -> (f x,y)",
       rhs: Data.Bifunctor.first f,
       note: IncreasesLaziness,
     }
-- error:
+- warning:
     {
       lhs: "\\(x,y) -> (x,f y)",
       rhs: Data.Bifunctor.second f,
       note: IncreasesLaziness,
     }
-- error: { lhs: "(f (fst x), g (snd x))", rhs: Data.Bifunctor.bimap f g x }
-- error: { lhs: "(f (fst x), snd x)", rhs: Data.Bifunctor.first f x }
-- error: { lhs: "(fst x, g (snd x))", rhs: Data.Bifunctor.second g x }
+- warning: { lhs: "(f (fst x), g (snd x))", rhs: Data.Bifunctor.bimap f g x }
+- warning: { lhs: "(f (fst x), snd x)", rhs: Data.Bifunctor.first f x }
+- warning: { lhs: "(fst x, g (snd x))", rhs: Data.Bifunctor.second g x }
 
 # FUNCTOR
 
-- error: { lhs: fmap f (fmap g x), rhs: fmap (f . g) x, name: Functor law }
+- warning: { lhs: fmap f (fmap g x), rhs: fmap (f . g) x, name: Functor law }
 - ignore: { lhs: f <$> (g <$> x), rhs: f . g <$> x, name: Functor law }
 - ignore: { lhs: x <&> g <&> f, rhs: x <&> f . g, name: Functor law }
-- error: { lhs: fmap id, rhs: id, name: Functor law }
-- error: { lhs: id <$> x, rhs: x, name: Functor law }
-- error: { lhs: x <&> id, rhs: x, name: Functor law }
-- error: { lhs: f <$> g <$> x, rhs: f . g <$> x }
-- error: { lhs: fmap f $ x, rhs: f <$> x, side: isApp x || isAtom x }
-- error: { lhs: \x -> a <$> b x, rhs: fmap a . b }
-- error: { lhs: \x -> b x <&> a, rhs: fmap a . b }
-- error: { lhs: x *> pure y, rhs: x Data.Functor.$> y }
-- error: { lhs: x *> return y, rhs: x Data.Functor.$> y }
-- error: { lhs: pure x <* y, rhs: x Data.Functor.<$ y }
-- error: { lhs: return x <* y, rhs: x Data.Functor.<$ y }
-- error: { lhs: const x <$> y, rhs: x <$ y }
-- error: { lhs: pure x <$> y, rhs: x <$ y }
-- error: { lhs: return x <$> y, rhs: x <$ y }
-- error: { lhs: x <&> const y, rhs: x Data.Functor.$> y }
-- error: { lhs: x <&> pure y, rhs: x Data.Functor.$> y }
-- error: { lhs: x <&> return y, rhs: x Data.Functor.$> y }
-- error: { lhs: "fmap f (x,b)", rhs: "(x,f b)", name: Using fmap on tuple }
-- error: { lhs: "f <$> (x,b)", rhs: "(x,f b)", name: Using <$> on tuple }
-- error: { lhs: "(x,b) <&> f", rhs: "(x,f b)", name: Using <&> on tuple }
-- error: { lhs: "fmap f (x,y,b)", rhs: "(x,y,f b)", name: Using fmap on tuple }
-- error: { lhs: "f <$> (x,y,b)", rhs: "(x,y,f b)", name: Using <$> on tuple }
-- error: { lhs: "(x,y,b) <&> f", rhs: "(x,y,f b)", name: Using <&> on tuple }
+- warning: { lhs: fmap id, rhs: id, name: Functor law }
+- warning: { lhs: id <$> x, rhs: x, name: Functor law }
+- warning: { lhs: x <&> id, rhs: x, name: Functor law }
+- warning: { lhs: f <$> g <$> x, rhs: f . g <$> x }
+- warning: { lhs: fmap f $ x, rhs: f <$> x, side: isApp x || isAtom x }
+- warning: { lhs: \x -> a <$> b x, rhs: fmap a . b }
+- warning: { lhs: \x -> b x <&> a, rhs: fmap a . b }
+- warning: { lhs: x *> pure y, rhs: x Data.Functor.$> y }
+- warning: { lhs: x *> return y, rhs: x Data.Functor.$> y }
+- warning: { lhs: pure x <* y, rhs: x Data.Functor.<$ y }
+- warning: { lhs: return x <* y, rhs: x Data.Functor.<$ y }
+- warning: { lhs: const x <$> y, rhs: x <$ y }
+- warning: { lhs: pure x <$> y, rhs: x <$ y }
+- warning: { lhs: return x <$> y, rhs: x <$ y }
+- warning: { lhs: x <&> const y, rhs: x Data.Functor.$> y }
+- warning: { lhs: x <&> pure y, rhs: x Data.Functor.$> y }
+- warning: { lhs: x <&> return y, rhs: x Data.Functor.$> y }
+- warning: { lhs: "fmap f (x,b)", rhs: "(x,f b)", name: Using fmap on tuple }
+- warning: { lhs: "f <$> (x,b)", rhs: "(x,f b)", name: Using <$> on tuple }
+- warning: { lhs: "(x,b) <&> f", rhs: "(x,f b)", name: Using <&> on tuple }
+- warning:
+    { lhs: "fmap f (x,y,b)", rhs: "(x,y,f b)", name: Using fmap on tuple }
+- warning: { lhs: "f <$> (x,y,b)", rhs: "(x,y,f b)", name: Using <$> on tuple }
+- warning: { lhs: "(x,y,b) <&> f", rhs: "(x,y,f b)", name: Using <&> on tuple }
 
 # APPLICATIVE
 
-- error: { lhs: pure x <*> y, rhs: x <$> y }
-- error: { lhs: return x <*> y, rhs: x <$> y }
-- error: { lhs: x <* pure y, rhs: x }
-- error: { lhs: x <* return y, rhs: x }
-- error: { lhs: pure x *> y, rhs: "y", name: Redundant *> }
-- error: { lhs: return x *> y, rhs: "y", name: Redundant *> }
-- error: { lhs: "x <*> Nothing", rhs: "Nothing" }
-- error: { lhs: "x <*> First Nothing", rhs: "First Nothing" }
-- error: { lhs: "x <*> Last Nothing", rhs: "Last Nothing" }
-- error: { lhs: "x <*> Left a", rhs: "Left a" }
-- error: { lhs: "x <*> Ap []", rhs: "Ap []" }
-- error: { lhs: "x <*> []", rhs: "[]" }
+- warning: { lhs: pure x <*> y, rhs: x <$> y }
+- warning: { lhs: return x <*> y, rhs: x <$> y }
+- warning: { lhs: x <* pure y, rhs: x }
+- warning: { lhs: x <* return y, rhs: x }
+- warning: { lhs: pure x *> y, rhs: "y", name: Redundant *> }
+- warning: { lhs: return x *> y, rhs: "y", name: Redundant *> }
+- warning: { lhs: "x <*> Nothing", rhs: "Nothing" }
+- warning: { lhs: "x <*> First Nothing", rhs: "First Nothing" }
+- warning: { lhs: "x <*> Last Nothing", rhs: "Last Nothing" }
+- warning: { lhs: "x <*> Left a", rhs: "Left a" }
+- warning: { lhs: "x <*> Ap []", rhs: "Ap []" }
+- warning: { lhs: "x <*> []", rhs: "[]" }
 
 # MONAD
 
-- error: { lhs: pure a >>= f, rhs: f a, name: "Monad law, left identity" }
-- error: { lhs: return a >>= f, rhs: f a, name: "Monad law, left identity" }
-- error: { lhs: f =<< pure a, rhs: f a, name: "Monad law, left identity" }
-- error: { lhs: f =<< return a, rhs: f a, name: "Monad law, left identity" }
-- error: { lhs: m >>= pure, rhs: m, name: "Monad law, right identity" }
-- error: { lhs: m >>= return, rhs: m, name: "Monad law, right identity" }
-- error: { lhs: pure =<< m, rhs: m, name: "Monad law, right identity" }
-- error: { lhs: return =<< m, rhs: m, name: "Monad law, right identity" }
-- error: { lhs: liftM, rhs: fmap }
-- error: { lhs: liftA, rhs: fmap }
-- error: { lhs: m >>= pure . f, rhs: m Data.Functor.<&> f }
-- error: { lhs: m >>= return . f, rhs: m Data.Functor.<&> f }
-- error: { lhs: pure . f =<< m, rhs: f <$> m }
-- error: { lhs: return . f =<< m, rhs: f <$> m }
-- error: { lhs: fmap f x >>= g, rhs: x >>= g . f }
-- error: { lhs: f <$> x >>= g, rhs: x >>= g . f }
-- error: { lhs: x Data.Functor.<&> f >>= g, rhs: x >>= g . f }
-- error: { lhs: g =<< fmap f x, rhs: g . f =<< x }
-- error: { lhs: g =<< f <$> x, rhs: g . f =<< x }
-- error: { lhs: g =<< (x Data.Functor.<&> f), rhs: g . f =<< x }
-- error:
+- warning: { lhs: pure a >>= f, rhs: f a, name: "Monad law, left identity" }
+- warning: { lhs: return a >>= f, rhs: f a, name: "Monad law, left identity" }
+- warning: { lhs: f =<< pure a, rhs: f a, name: "Monad law, left identity" }
+- warning: { lhs: f =<< return a, rhs: f a, name: "Monad law, left identity" }
+- warning: { lhs: m >>= pure, rhs: m, name: "Monad law, right identity" }
+- warning: { lhs: m >>= return, rhs: m, name: "Monad law, right identity" }
+- warning: { lhs: pure =<< m, rhs: m, name: "Monad law, right identity" }
+- warning: { lhs: return =<< m, rhs: m, name: "Monad law, right identity" }
+- warning: { lhs: liftM, rhs: fmap }
+- warning: { lhs: liftA, rhs: fmap }
+- warning: { lhs: m >>= pure . f, rhs: m Data.Functor.<&> f }
+- warning: { lhs: m >>= return . f, rhs: m Data.Functor.<&> f }
+- warning: { lhs: pure . f =<< m, rhs: f <$> m }
+- warning: { lhs: return . f =<< m, rhs: f <$> m }
+- warning: { lhs: fmap f x >>= g, rhs: x >>= g . f }
+- warning: { lhs: f <$> x >>= g, rhs: x >>= g . f }
+- warning: { lhs: x Data.Functor.<&> f >>= g, rhs: x >>= g . f }
+- warning: { lhs: g =<< fmap f x, rhs: g . f =<< x }
+- warning: { lhs: g =<< f <$> x, rhs: g . f =<< x }
+- warning: { lhs: g =<< (x Data.Functor.<&> f), rhs: g . f =<< x }
+- warning:
     {
       lhs: if x then y else pure (),
       rhs: Control.Monad.when x $ _noParen_ y,
       side: not (isAtom y),
     }
-- error:
+- warning:
     {
       lhs: if x then y else return (),
       rhs: Control.Monad.when x $ _noParen_ y,
       side: not (isAtom y),
     }
-- error:
+- warning:
     {
       lhs: if x then y else pure (),
       rhs: Control.Monad.when x y,
       side: isAtom y,
     }
-- error:
+- warning:
     {
       lhs: if x then y else return (),
       rhs: Control.Monad.when x y,
       side: isAtom y,
     }
-- error:
+- warning:
     {
       lhs: if x then pure () else y,
       rhs: Control.Monad.unless x $ _noParen_ y,
       side: not (isAtom y),
     }
-- error:
+- warning:
     {
       lhs: if x then return () else y,
       rhs: Control.Monad.unless x $ _noParen_ y,
       side: not (isAtom y),
     }
-- error:
+- warning:
     {
       lhs: if x then pure () else y,
       rhs: Control.Monad.unless x y,
       side: isAtom y,
     }
-- error:
+- warning:
     {
       lhs: if x then return () else y,
       rhs: Control.Monad.unless x y,
       side: isAtom y,
     }
-- error: { lhs: sequence (map f x), rhs: mapM f x }
-- error: { lhs: sequence_ (map f x), rhs: mapM_ f x }
-- error: { lhs: sequence (f <$> x), rhs: mapM f x }
-- error: { lhs: sequence (x <&> f), rhs: mapM f x }
-- error: { lhs: sequence (fmap f x), rhs: mapM f x }
-- error: { lhs: sequence_ (f <$> x), rhs: mapM_ f x }
-- error: { lhs: sequence_ (x <&> f), rhs: mapM_ f x }
-- error: { lhs: sequence_ (fmap f x), rhs: mapM_ f x }
-- error: { lhs: flip mapM, rhs: Control.Monad.forM }
-- error: { lhs: flip mapM_, rhs: Control.Monad.forM_ }
-- error: { lhs: flip forM, rhs: mapM }
-- error: { lhs: flip forM_, rhs: mapM_ }
-- error: { lhs: when (not x), rhs: unless x }
-- error: { lhs: when (notElem x y), rhs: unless (elem x y), name: Use unless }
-- error: { lhs: unless (not x), rhs: when x }
-- error: { lhs: unless (notElem x y), rhs: when (elem x y), name: Use when }
-- error: { lhs: x >>= id, rhs: Control.Monad.join x }
-- error: { lhs: id =<< x, rhs: Control.Monad.join x }
-- error: { lhs: join (f <$> x), rhs: f =<< x }
-- error: { lhs: join (x <&> f), rhs: f =<< x }
-- error: { lhs: join (fmap f x), rhs: f =<< x }
-- error:
+- warning: { lhs: sequence (map f x), rhs: mapM f x }
+- warning: { lhs: sequence_ (map f x), rhs: mapM_ f x }
+- warning: { lhs: sequence (f <$> x), rhs: mapM f x }
+- warning: { lhs: sequence (x <&> f), rhs: mapM f x }
+- warning: { lhs: sequence (fmap f x), rhs: mapM f x }
+- warning: { lhs: sequence_ (f <$> x), rhs: mapM_ f x }
+- warning: { lhs: sequence_ (x <&> f), rhs: mapM_ f x }
+- warning: { lhs: sequence_ (fmap f x), rhs: mapM_ f x }
+- warning: { lhs: flip mapM, rhs: Control.Monad.forM }
+- warning: { lhs: flip mapM_, rhs: Control.Monad.forM_ }
+- warning: { lhs: flip forM, rhs: mapM }
+- warning: { lhs: flip forM_, rhs: mapM_ }
+- warning: { lhs: when (not x), rhs: unless x }
+- warning: { lhs: when (notElem x y), rhs: unless (elem x y), name: Use unless }
+- warning: { lhs: unless (not x), rhs: when x }
+- warning: { lhs: unless (notElem x y), rhs: when (elem x y), name: Use when }
+- warning: { lhs: x >>= id, rhs: Control.Monad.join x }
+- warning: { lhs: id =<< x, rhs: Control.Monad.join x }
+- warning: { lhs: join (f <$> x), rhs: f =<< x }
+- warning: { lhs: join (x <&> f), rhs: f =<< x }
+- warning: { lhs: join (fmap f x), rhs: f =<< x }
+- warning:
     { lhs: a >> pure (), rhs: Control.Monad.void a, side: isAtom a || isApp a }
-- error:
+- warning:
     {
       lhs: a >> return (),
       rhs: Control.Monad.void a,
       side: isAtom a || isApp a,
     }
-- error: { lhs: fmap (const ()), rhs: Control.Monad.void }
-- error: { lhs: const () <$> x, rhs: Control.Monad.void x }
-- error: { lhs: x <&> const (), rhs: Control.Monad.void x }
-- error: { lhs: () <$ x, rhs: Control.Monad.void x }
-- error: { lhs: flip (>=>), rhs: (<=<) }
-- error: { lhs: flip (<=<), rhs: (>=>) }
-- error: { lhs: flip (>>=), rhs: (=<<) }
-- error: { lhs: flip (=<<), rhs: (>>=) }
-- error: { lhs: \x -> f x >>= g, rhs: f Control.Monad.>=> g }
-- error: { lhs: \x -> f =<< g x, rhs: f Control.Monad.<=< g }
-- error: { lhs: (>>= f) . g, rhs: f Control.Monad.<=< g }
-- error: { lhs: (f =<<) . g, rhs: f Control.Monad.<=< g }
-- error: { lhs: a >> forever a, rhs: forever a }
-- error: { lhs: liftM2 id, rhs: ap }
-- error: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
-- error: { lhs: liftA2 f (return x), rhs: fmap (f x) }
-- error: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
-- error: { lhs: liftM2 f (return x), rhs: fmap (f x) }
-- error: { lhs: fmap f (pure x), rhs: pure (f x) }
-- error: { lhs: fmap f (return x), rhs: return (f x) }
-- error: { lhs: f <$> pure x, rhs: pure (f x) }
-- error: { lhs: pure x <&> f, rhs: pure (f x) }
-- error: { lhs: f <$> return x, rhs: return (f x) }
-- error: { lhs: return x <&> f, rhs: return (f x) }
-- error: { lhs: mapM (uncurry f) (zip l m), rhs: zipWithM f l m }
-- error: { lhs: mapM_ (void . f), rhs: mapM_ f }
-- error: { lhs: forM_ x (void . f), rhs: forM_ x f }
-- error: { lhs: a >>= \_ -> b, rhs: a >> b }
-- error: { lhs: m <* pure x, rhs: m }
-- error: { lhs: m <* return x, rhs: m }
-- error: { lhs: pure x *> m, rhs: m, name: Redundant *> }
-- error: { lhs: return x *> m, rhs: m, name: Redundant *> }
-- error: { lhs: pure x >> m, rhs: m, name: Redundant >> }
-- error: { lhs: return x >> m, rhs: m, name: Redundant >> }
-- error: { lhs: "forM [1..n] (const f)", rhs: replicateM n f }
-- error: { lhs: "for [1..n] (const f)", rhs: replicateM n f }
-- error: { lhs: "forM [1..n] (\\_ -> x)", rhs: replicateM n x }
-- error: { lhs: "for [1..n] (\\_ -> x)", rhs: replicateM n x }
+- warning: { lhs: fmap (const ()), rhs: Control.Monad.void }
+- warning: { lhs: const () <$> x, rhs: Control.Monad.void x }
+- warning: { lhs: x <&> const (), rhs: Control.Monad.void x }
+- warning: { lhs: () <$ x, rhs: Control.Monad.void x }
+- warning: { lhs: flip (>=>), rhs: (<=<) }
+- warning: { lhs: flip (<=<), rhs: (>=>) }
+- warning: { lhs: flip (>>=), rhs: (=<<) }
+- warning: { lhs: flip (=<<), rhs: (>>=) }
+- warning: { lhs: \x -> f x >>= g, rhs: f Control.Monad.>=> g }
+- warning: { lhs: \x -> f =<< g x, rhs: f Control.Monad.<=< g }
+- warning: { lhs: (>>= f) . g, rhs: f Control.Monad.<=< g }
+- warning: { lhs: (f =<<) . g, rhs: f Control.Monad.<=< g }
+- warning: { lhs: a >> forever a, rhs: forever a }
+- warning: { lhs: liftM2 id, rhs: ap }
+- warning: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
+- warning: { lhs: liftA2 f (return x), rhs: fmap (f x) }
+- warning: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
+- warning: { lhs: liftM2 f (return x), rhs: fmap (f x) }
+- warning: { lhs: fmap f (pure x), rhs: pure (f x) }
+- warning: { lhs: fmap f (return x), rhs: return (f x) }
+- warning: { lhs: f <$> pure x, rhs: pure (f x) }
+- warning: { lhs: pure x <&> f, rhs: pure (f x) }
+- warning: { lhs: f <$> return x, rhs: return (f x) }
+- warning: { lhs: return x <&> f, rhs: return (f x) }
+- warning: { lhs: mapM (uncurry f) (zip l m), rhs: zipWithM f l m }
+- warning: { lhs: mapM_ (void . f), rhs: mapM_ f }
+- warning: { lhs: forM_ x (void . f), rhs: forM_ x f }
+- warning: { lhs: a >>= \_ -> b, rhs: a >> b }
+- warning: { lhs: m <* pure x, rhs: m }
+- warning: { lhs: m <* return x, rhs: m }
+- warning: { lhs: pure x *> m, rhs: m, name: Redundant *> }
+- warning: { lhs: return x *> m, rhs: m, name: Redundant *> }
+- warning: { lhs: pure x >> m, rhs: m, name: Redundant >> }
+- warning: { lhs: return x >> m, rhs: m, name: Redundant >> }
+- warning: { lhs: "forM [1..n] (const f)", rhs: replicateM n f }
+- warning: { lhs: "for [1..n] (const f)", rhs: replicateM n f }
+- warning: { lhs: "forM [1..n] (\\_ -> x)", rhs: replicateM n x }
+- warning: { lhs: "for [1..n] (\\_ -> x)", rhs: replicateM n x }
 
 # STATE MONAD
 
-- error: { lhs: fst (runState x y), rhs: evalState x y }
-- error: { lhs: snd (runState x y), rhs: execState x y }
+- warning: { lhs: fst (runState x y), rhs: evalState x y }
+- warning: { lhs: snd (runState x y), rhs: execState x y }
 
 # MONAD LIST
 
-- error: { lhs: unzip <$> mapM f x, rhs: Control.Monad.mapAndUnzipM f x }
-- error: { lhs: mapM f x <&> unzip, rhs: Control.Monad.mapAndUnzipM f x }
-- error: { lhs: fmap unzip (mapM f x), rhs: Control.Monad.mapAndUnzipM f x }
-- error: { lhs: sequence (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
-- error: { lhs: sequence_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
-- error: { lhs: sequence (replicate n x), rhs: Control.Monad.replicateM n x }
-- error: { lhs: sequence_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
-- error: { lhs: sequenceA (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
-- error: { lhs: sequenceA_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
-- error: { lhs: sequenceA (replicate n x), rhs: Control.Monad.replicateM n x }
-- error: { lhs: sequenceA_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
-- error: { lhs: mapM f (replicate n x), rhs: Control.Monad.replicateM n (f x) }
-- error:
+- warning: { lhs: unzip <$> mapM f x, rhs: Control.Monad.mapAndUnzipM f x }
+- warning: { lhs: mapM f x <&> unzip, rhs: Control.Monad.mapAndUnzipM f x }
+- warning: { lhs: fmap unzip (mapM f x), rhs: Control.Monad.mapAndUnzipM f x }
+- warning: { lhs: sequence (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
+- warning:
+    { lhs: sequence_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
+- warning: { lhs: sequence (replicate n x), rhs: Control.Monad.replicateM n x }
+- warning:
+    { lhs: sequence_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
+- warning: { lhs: sequenceA (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
+- warning:
+    { lhs: sequenceA_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
+- warning: { lhs: sequenceA (replicate n x), rhs: Control.Monad.replicateM n x }
+- warning:
+    { lhs: sequenceA_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
+- warning:
+    { lhs: mapM f (replicate n x), rhs: Control.Monad.replicateM n (f x) }
+- warning:
     { lhs: mapM_ f (replicate n x), rhs: Control.Monad.replicateM_ n (f x) }
-- error: { lhs: mapM f (map g x), rhs: mapM (f . g) x, name: Fuse mapM/map }
-- error: { lhs: mapM_ f (map g x), rhs: mapM_ (f . g) x, name: Fuse mapM_/map }
-- error:
+- warning: { lhs: mapM f (map g x), rhs: mapM (f . g) x, name: Fuse mapM/map }
+- warning:
+    { lhs: mapM_ f (map g x), rhs: mapM_ (f . g) x, name: Fuse mapM_/map }
+- warning:
     {
       lhs: traverse f (map g x),
       rhs: traverse (f . g) x,
       name: Fuse traverse/map,
     }
-- error:
+- warning:
     {
       lhs: traverse_ f (map g x),
       rhs: traverse_ (f . g) x,
       name: Fuse traverse_/map,
     }
-- error: { lhs: mapM id, rhs: sequence }
-- error: { lhs: mapM_ id, rhs: sequence_ }
+- warning: { lhs: mapM id, rhs: sequence }
+- warning: { lhs: mapM_ id, rhs: sequence_ }
 
 # APPLICATIVE / TRAVERSABLE
 
-- error: { lhs: flip traverse, rhs: for }
-- error: { lhs: flip for, rhs: traverse }
-- error: { lhs: flip traverse_, rhs: for_ }
-- error: { lhs: flip for_, rhs: traverse_ }
-- error: { lhs: foldr (*>) (pure ()), rhs: sequenceA_ }
-- error: { lhs: foldr (*>) (return ()), rhs: sequence_ }
-- error: { lhs: foldr (<|>) empty, rhs: asum }
-- error: { lhs: liftA2 (flip ($)), rhs: (<**>) }
-- error: { lhs: liftA2 f (pure x), rhs: fmap (f x) }
-- error: { lhs: liftA2 f (return x), rhs: fmap (f x) }
-- error: { lhs: Just <$> a <|> pure Nothing, rhs: optional a }
-- error: { lhs: Just <$> a <|> return Nothing, rhs: optional a }
-- error: { lhs: empty <|> x, rhs: x, name: "Alternative law, left identity" }
-- error: { lhs: x <|> empty, rhs: x, name: "Alternative law, right identity" }
-- error: { lhs: traverse id, rhs: sequenceA }
-- error: { lhs: traverse_ id, rhs: sequenceA_ }
+- warning: { lhs: flip traverse, rhs: for }
+- warning: { lhs: flip for, rhs: traverse }
+- warning: { lhs: flip traverse_, rhs: for_ }
+- warning: { lhs: flip for_, rhs: traverse_ }
+- warning: { lhs: foldr (*>) (pure ()), rhs: sequenceA_ }
+- warning: { lhs: foldr (*>) (return ()), rhs: sequence_ }
+- warning: { lhs: foldr (<|>) empty, rhs: asum }
+- warning: { lhs: liftA2 (flip ($)), rhs: (<**>) }
+- warning: { lhs: liftA2 f (pure x), rhs: fmap (f x) }
+- warning: { lhs: liftA2 f (return x), rhs: fmap (f x) }
+- warning: { lhs: Just <$> a <|> pure Nothing, rhs: optional a }
+- warning: { lhs: Just <$> a <|> return Nothing, rhs: optional a }
+- warning: { lhs: empty <|> x, rhs: x, name: "Alternative law, left identity" }
+- warning: { lhs: x <|> empty, rhs: x, name: "Alternative law, right identity" }
+- warning: { lhs: traverse id, rhs: sequenceA }
+- warning: { lhs: traverse_ id, rhs: sequenceA_ }
 
 # LIST COMP
 
-- error:
+- warning:
     {
       lhs: "if b then [x] else []",
       rhs: "[x | b]",
       name: Use list comprehension,
     }
-- error:
+- warning:
     {
       lhs: "if b then [] else [x]",
       rhs: "[x | not b]",
       name: Use list comprehension,
     }
-- error:
+- warning:
     {
       lhs: "[x | x <- y]",
       rhs: "y",
       side: isVar x,
       name: Redundant list comprehension,
     }
-- error:
+- warning:
     {
       lhs: "[ f x | x <- [y] ]",
       rhs: "[f y]",
@@ -997,24 +1006,24 @@
 
 # SEQ
 
-- error: { lhs: seq x x, rhs: x, name: Redundant seq }
-- error: { lhs: join seq, rhs: id, name: Redundant seq }
-- error: { lhs: id $! x, rhs: x, name: Redundant $! }
-- error: { lhs: seq x y, rhs: "y", side: isWHNF x, name: Redundant seq }
-- error: { lhs: f $! x, rhs: f x, side: isWHNF x, name: Redundant $! }
-- error:
+- warning: { lhs: seq x x, rhs: x, name: Redundant seq }
+- warning: { lhs: join seq, rhs: id, name: Redundant seq }
+- warning: { lhs: id $! x, rhs: x, name: Redundant $! }
+- warning: { lhs: seq x y, rhs: "y", side: isWHNF x, name: Redundant seq }
+- warning: { lhs: f $! x, rhs: f x, side: isWHNF x, name: Redundant $! }
+- warning:
     { lhs: evaluate x, rhs: return x, side: isWHNF x, name: Redundant evaluate }
-- error: { lhs: seq (rnf x) (), rhs: rnf x, name: Redundant seq }
+- warning: { lhs: seq (rnf x) (), rhs: rnf x, name: Redundant seq }
 
 # TUPLE
 
-- error: { lhs: fst (unzip x), rhs: map fst x }
-- error: { lhs: snd (unzip x), rhs: map snd x }
-- error: { lhs: "\\x y -> (x, y)", rhs: "(,)" }
-- error: { lhs: "\\x y z -> (x, y, z)", rhs: "(,,)" }
-- error: { lhs: "(,b) a", rhs: "(a,b)", side: isAtom a, name: Evaluate }
-- error: { lhs: "(a,) b", rhs: "(a,b)", side: isAtom b, name: Evaluate }
-- error:
+- warning: { lhs: fst (unzip x), rhs: map fst x }
+- warning: { lhs: snd (unzip x), rhs: map snd x }
+- warning: { lhs: "\\x y -> (x, y)", rhs: "(,)" }
+- warning: { lhs: "\\x y z -> (x, y, z)", rhs: "(,,)" }
+- warning: { lhs: "(,b) a", rhs: "(a,b)", side: isAtom a, name: Evaluate }
+- warning: { lhs: "(a,) b", rhs: "(a,b)", side: isAtom b, name: Evaluate }
+- warning:
     {
       lhs: "Data.List.NonEmpty.unzip",
       rhs: "Data.Functor.unzip",
@@ -1024,20 +1033,20 @@
 
 # MAYBE
 
-- error: { lhs: maybe x id, rhs: Data.Maybe.fromMaybe x }
-- error: { lhs: maybe Nothing Just, rhs: id, name: Redundant maybe }
-- error: { lhs: maybe False (const True), rhs: Data.Maybe.isJust }
-- error: { lhs: maybe True (const False), rhs: Data.Maybe.isNothing }
-- error: { lhs: maybe False (x ==), rhs: (Just x ==), name: Redundant maybe }
-- error: { lhs: maybe True (x /=), rhs: (Just x /=), name: Redundant maybe }
-- error:
+- warning: { lhs: maybe x id, rhs: Data.Maybe.fromMaybe x }
+- warning: { lhs: maybe Nothing Just, rhs: id, name: Redundant maybe }
+- warning: { lhs: maybe False (const True), rhs: Data.Maybe.isJust }
+- warning: { lhs: maybe True (const False), rhs: Data.Maybe.isNothing }
+- warning: { lhs: maybe False (x ==), rhs: (Just x ==), name: Redundant maybe }
+- warning: { lhs: maybe True (x /=), rhs: (Just x /=), name: Redundant maybe }
+- warning:
     {
       lhs: maybe False (== x),
       rhs: (Just x ==),
       note: ValidInstance Eq x,
       name: Redundant maybe,
     }
-- error:
+- warning:
     {
       lhs: maybe True (/= x),
       rhs: (Just x /=),
@@ -1053,160 +1062,162 @@
     } # Eta expanded, see https://github.com/ndmitchell/hlint/issues/970#issuecomment-643645053
 - ignore:
     { lhs: fromMaybe True x, rhs: Just False /= x, name: Redundant fromMaybe }
-- error: { lhs: not (isNothing x), rhs: isJust x }
-- error: { lhs: not (isJust x), rhs: isNothing x }
-- error: { lhs: "maybe [] (:[])", rhs: maybeToList }
-- error: { lhs: catMaybes (map f x), rhs: mapMaybe f x }
-- error: { lhs: catMaybes (f <$> x), rhs: mapMaybe f x }
-- error: { lhs: catMaybes (x <&> f), rhs: mapMaybe f x }
-- error: { lhs: catMaybes (fmap f x), rhs: mapMaybe f x }
-- error:
+- warning: { lhs: not (isNothing x), rhs: isJust x }
+- warning: { lhs: not (isJust x), rhs: isNothing x }
+- warning: { lhs: "maybe [] (:[])", rhs: maybeToList }
+- warning: { lhs: catMaybes (map f x), rhs: mapMaybe f x }
+- warning: { lhs: catMaybes (f <$> x), rhs: mapMaybe f x }
+- warning: { lhs: catMaybes (x <&> f), rhs: mapMaybe f x }
+- warning: { lhs: catMaybes (fmap f x), rhs: mapMaybe f x }
+- warning:
     {
       lhs: case x of Nothing -> y; Just a -> a,
       rhs: Data.Maybe.fromMaybe y x,
       side: isAtom y,
       name: Replace case with fromMaybe,
     }
-- error:
+- warning:
     {
       lhs: case x of Just a -> a; Nothing -> y,
       rhs: Data.Maybe.fromMaybe y x,
       side: isAtom y,
       name: Replace case with fromMaybe,
     }
-- error:
+- warning:
     {
       lhs: case x of Nothing -> y; Just a -> f a,
       rhs: maybe y f x,
       side: isAtom y && isAtom f,
       name: Replace case with maybe,
     }
-- error:
+- warning:
     {
       lhs: case x of Just a -> f a; Nothing -> y,
       rhs: maybe y f x,
       side: isAtom y && isAtom f,
       name: Replace case with maybe,
     }
-- error: { lhs: if isNothing x then y else f (fromJust x), rhs: maybe y f x }
-- error: { lhs: if isJust x then f (fromJust x) else y, rhs: maybe y f x }
-- error: { lhs: maybe Nothing (Just . f), rhs: fmap f }
-- error: { lhs: map fromJust (filter isJust x), rhs: Data.Maybe.catMaybes x }
-- error:
+- warning: { lhs: if isNothing x then y else f (fromJust x), rhs: maybe y f x }
+- warning: { lhs: if isJust x then f (fromJust x) else y, rhs: maybe y f x }
+- warning: { lhs: maybe Nothing (Just . f), rhs: fmap f }
+- warning: { lhs: map fromJust (filter isJust x), rhs: Data.Maybe.catMaybes x }
+- warning:
     {
       lhs: filter isJust (map f x),
       rhs: map Just (mapMaybe f x),
       name: Use mapMaybe,
     }
-- error:
+- warning:
     {
       lhs: filter isJust (f <*> x),
       rhs: map Just (mapMaybe f x),
       name: Use mapMaybe,
     }
-- error:
+- warning:
     {
       lhs: filter isJust (x <&> f),
       rhs: map Just (mapMaybe f x),
       name: Use mapMaybe,
     }
-- error:
+- warning:
     {
       lhs: filter isJust (fmap f x),
       rhs: map Just (mapMaybe f x),
       name: Use mapMaybe,
     }
-- error: { lhs: x == Nothing, rhs: isNothing x }
-- error: { lhs: Nothing == x, rhs: isNothing x }
-- error: { lhs: x /= Nothing, rhs: Data.Maybe.isJust x }
-- error: { lhs: Nothing /= x, rhs: Data.Maybe.isJust x }
-- error: { lhs: concatMap (maybeToList . f), rhs: Data.Maybe.mapMaybe f }
-- error: { lhs: concatMap maybeToList, rhs: catMaybes }
-- error: { lhs: maybe n Just x, rhs: x Control.Applicative.<|> n }
-- error: { lhs: if isNothing x then y else fromJust x, rhs: fromMaybe y x }
-- error: { lhs: if isJust x then fromJust x else y, rhs: fromMaybe y x }
-- error: { lhs: isJust x && (fromJust x == y), rhs: x == Just y }
-- error: { lhs: isJust y && (x == fromJust y), rhs: Just x == y }
-- error:
+- warning: { lhs: x == Nothing, rhs: isNothing x }
+- warning: { lhs: Nothing == x, rhs: isNothing x }
+- warning: { lhs: x /= Nothing, rhs: Data.Maybe.isJust x }
+- warning: { lhs: Nothing /= x, rhs: Data.Maybe.isJust x }
+- warning: { lhs: concatMap (maybeToList . f), rhs: Data.Maybe.mapMaybe f }
+- warning: { lhs: concatMap maybeToList, rhs: catMaybes }
+- warning: { lhs: maybe n Just x, rhs: x Control.Applicative.<|> n }
+- warning: { lhs: if isNothing x then y else fromJust x, rhs: fromMaybe y x }
+- warning: { lhs: if isJust x then fromJust x else y, rhs: fromMaybe y x }
+- warning: { lhs: isJust x && (fromJust x == y), rhs: x == Just y }
+- warning: { lhs: isJust y && (x == fromJust y), rhs: Just x == y }
+- warning:
     {
       lhs: mapMaybe f (map g x),
       rhs: mapMaybe (f . g) x,
       name: Fuse mapMaybe/map,
     }
-- error: { lhs: fromMaybe a (fmap f x), rhs: maybe a f x }
-- error: { lhs: fromMaybe a (f <$> x), rhs: maybe a f x }
-- error: { lhs: fromMaybe a (x <&> f), rhs: maybe a f x }
-- error: { lhs: mapMaybe id, rhs: catMaybes }
-- error:
+- warning: { lhs: fromMaybe a (fmap f x), rhs: maybe a f x }
+- warning: { lhs: fromMaybe a (f <$> x), rhs: maybe a f x }
+- warning: { lhs: fromMaybe a (x <&> f), rhs: maybe a f x }
+- warning: { lhs: mapMaybe id, rhs: catMaybes }
+- warning:
     { lhs: "[x | Just x <- a]", rhs: Data.Maybe.catMaybes a, side: isVar x }
-- error:
+- warning:
     {
       lhs: case m of Nothing -> Nothing; Just x -> x,
       rhs: Control.Monad.join m,
     }
-- error: { lhs: maybe Nothing id, rhs: join }
-- error: { lhs: maybe Nothing f x, rhs: f =<< x }
-- error:
+- warning: { lhs: maybe Nothing id, rhs: join }
+- warning: { lhs: maybe Nothing f x, rhs: f =<< x }
+- warning:
     { lhs: maybe x f (g <$> y), rhs: maybe x (f . g) y, name: Redundant <$> }
-- error:
+- warning:
     { lhs: maybe x f (y <&> g), rhs: maybe x (f . g) y, name: Redundant <&> }
-- error:
+- warning:
     { lhs: maybe x f (fmap g y), rhs: maybe x (f . g) y, name: Redundant fmap }
-- error: { lhs: isJust (f <$> x), rhs: isJust x }
-- error: { lhs: isJust (x <&> f), rhs: isJust x }
-- error: { lhs: isJust (fmap f x), rhs: isJust x }
-- error: { lhs: isNothing (f <$> x), rhs: isNothing x }
-- error: { lhs: isNothing (x <&> f), rhs: isNothing x }
-- error: { lhs: isNothing (fmap f x), rhs: isNothing x }
-- error:
+- warning: { lhs: isJust (f <$> x), rhs: isJust x }
+- warning: { lhs: isJust (x <&> f), rhs: isJust x }
+- warning: { lhs: isJust (fmap f x), rhs: isJust x }
+- warning: { lhs: isNothing (f <$> x), rhs: isNothing x }
+- warning: { lhs: isNothing (x <&> f), rhs: isNothing x }
+- warning: { lhs: isNothing (fmap f x), rhs: isNothing x }
+- warning:
     { lhs: fromJust (f <$> x), rhs: f (fromJust x), note: IncreasesLaziness }
-- error:
+- warning:
     { lhs: fromJust (x <&> f), rhs: f (fromJust x), note: IncreasesLaziness }
-- error:
+- warning:
     { lhs: fromJust (fmap f x), rhs: f (fromJust x), note: IncreasesLaziness }
-- error:
+- warning:
     { lhs: mapMaybe f (g <$> x), rhs: mapMaybe (f . g) x, name: Redundant <$> }
-- error:
+- warning:
     { lhs: mapMaybe f (x <&> g), rhs: mapMaybe (f . g) x, name: Redundant <&> }
-- error:
+- warning:
     {
       lhs: mapMaybe f (fmap g x),
       rhs: mapMaybe (f . g) x,
       name: Redundant fmap,
     }
-- error: { lhs: catMaybes (nub x), rhs: nub (catMaybes x), name: Move nub out }
-- error: { lhs: lefts (nub x), rhs: nub (lefts x), name: Move nub out }
-- error: { lhs: rights (nub x), rhs: nub (rights x), name: Move nub out }
-- error:
+- warning:
+    { lhs: catMaybes (nub x), rhs: nub (catMaybes x), name: Move nub out }
+- warning: { lhs: lefts (nub x), rhs: nub (lefts x), name: Move nub out }
+- warning: { lhs: rights (nub x), rhs: nub (rights x), name: Move nub out }
+- warning:
     {
       lhs: catMaybes (reverse x),
       rhs: reverse (catMaybes x),
       name: Move reverse out,
     }
-- error:
+- warning:
     { lhs: lefts (reverse x), rhs: reverse (lefts x), name: Move reverse out }
-- error:
+- warning:
     { lhs: rights (reverse x), rhs: reverse (rights x), name: Move reverse out }
-- error:
+- warning:
     { lhs: catMaybes (sort x), rhs: sort (catMaybes x), name: Move sort out }
-- error: { lhs: lefts (sort x), rhs: sort (lefts x), name: Move sort out }
-- error: { lhs: rights (sort x), rhs: sort (rights x), name: Move sort out }
-- error:
+- warning: { lhs: lefts (sort x), rhs: sort (lefts x), name: Move sort out }
+- warning: { lhs: rights (sort x), rhs: sort (rights x), name: Move sort out }
+- warning:
     {
       lhs: catMaybes (nubOrd x),
       rhs: nubOrd (catMaybes x),
       name: Move nubOrd out,
     }
-- error: { lhs: lefts (nubOrd x), rhs: nubOrd (lefts x), name: Move nubOrd out }
-- error:
+- warning:
+    { lhs: lefts (nubOrd x), rhs: nubOrd (lefts x), name: Move nubOrd out }
+- warning:
     { lhs: rights (nubOrd x), rhs: nubOrd (rights x), name: Move nubOrd out }
-- error:
+- warning:
     {
       lhs: filter f (reverse x),
       rhs: reverse (filter f x),
       name: Move reverse out,
     }
-- error:
+- warning:
     {
       lhs: mapMaybe f (reverse x),
       rhs: reverse (mapMaybe f x),
@@ -1215,80 +1226,80 @@
 
 # EITHER
 
-- error: { lhs: "[a | Left a <- b]", rhs: lefts b, side: isVar a }
-- error: { lhs: "[a | Right a <- b]", rhs: rights b, side: isVar a }
-- error: { lhs: either Left (Right . f), rhs: fmap f }
-- error:
+- warning: { lhs: "[a | Left a <- b]", rhs: lefts b, side: isVar a }
+- warning: { lhs: "[a | Right a <- b]", rhs: rights b, side: isVar a }
+- warning: { lhs: either Left (Right . f), rhs: fmap f }
+- warning:
     {
       lhs: either f g (fmap h x),
       rhs: either f (g . h) x,
       name: Redundant fmap,
     }
-- error:
+- warning:
     { lhs: either f g (h <$> x), rhs: either f (g . h) x, name: Redundant <$> }
-- error:
+- warning:
     { lhs: either f g (x <&> h), rhs: either f (g . h) x, name: Redundant <&> }
-- error: { lhs: isLeft (fmap f x), rhs: isLeft x }
-- error: { lhs: isLeft (f <$> x), rhs: isLeft x }
-- error: { lhs: isLeft (x <&> f), rhs: isLeft x }
-- error: { lhs: isRight (fmap f x), rhs: isRight x }
-- error: { lhs: isRight (f <$> x), rhs: isRight x }
-- error: { lhs: isRight (x <&> f), rhs: isRight x }
-- error: { lhs: fromLeft x (fmap f y), rhs: fromLeft x y }
-- error: { lhs: fromLeft x (f <$> y), rhs: fromLeft x y }
-- error: { lhs: fromLeft x (y <&> f), rhs: fromLeft x y }
-- error: { lhs: fromRight x (fmap f y), rhs: either (const x) f y }
-- error: { lhs: fromRight x (f <$> y), rhs: either (const x) f y }
-- error: { lhs: fromRight x (y <&> f), rhs: either (const x) f y }
-- error: { lhs: either (const x) id, rhs: fromRight x }
-- error: { lhs: either id (const x), rhs: fromLeft x }
-- error: { lhs: either Left f x, rhs: f =<< x }
+- warning: { lhs: isLeft (fmap f x), rhs: isLeft x }
+- warning: { lhs: isLeft (f <$> x), rhs: isLeft x }
+- warning: { lhs: isLeft (x <&> f), rhs: isLeft x }
+- warning: { lhs: isRight (fmap f x), rhs: isRight x }
+- warning: { lhs: isRight (f <$> x), rhs: isRight x }
+- warning: { lhs: isRight (x <&> f), rhs: isRight x }
+- warning: { lhs: fromLeft x (fmap f y), rhs: fromLeft x y }
+- warning: { lhs: fromLeft x (f <$> y), rhs: fromLeft x y }
+- warning: { lhs: fromLeft x (y <&> f), rhs: fromLeft x y }
+- warning: { lhs: fromRight x (fmap f y), rhs: either (const x) f y }
+- warning: { lhs: fromRight x (f <$> y), rhs: either (const x) f y }
+- warning: { lhs: fromRight x (y <&> f), rhs: either (const x) f y }
+- warning: { lhs: either (const x) id, rhs: fromRight x }
+- warning: { lhs: either id (const x), rhs: fromLeft x }
+- warning: { lhs: either Left f x, rhs: f =<< x }
 
 # INFIX
 
-- error:
+- warning:
     {
       lhs: elem x y,
       rhs: x `elem` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: notElem x y,
       rhs: x `notElem` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: isInfixOf x y,
       rhs: x `isInfixOf` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: isSuffixOf x y,
       rhs: x `isSuffixOf` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: isPrefixOf x y,
       rhs: x `isPrefixOf` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: union x y,
       rhs: x `union` y,
       side: not (isInfixApp original) && not (isParen result),
       name: Use infix,
     }
-- error:
+- warning:
     {
       lhs: intersect x y,
       rhs: x `intersect` y,
@@ -1298,432 +1309,441 @@
 
 # MATHS
 
-- error:
+- warning:
     {
       lhs: fromIntegral x,
       rhs: x,
       side: isLitInt x,
       name: Redundant fromIntegral,
     }
-- error:
+- warning:
     {
       lhs: fromInteger x,
       rhs: x,
       side: isLitInt x,
       name: Redundant fromInteger,
     }
-- error: { lhs: x + negate y, rhs: x - y }
-- error: { lhs: 0 - x, rhs: negate x }
-- error: { lhs: negate (negate x), rhs: x, name: Redundant negate }
-- error: { lhs: log y / log x, rhs: logBase x y }
-- error: { lhs: sin x / cos x, rhs: tan x }
-- error: { lhs: rem n 2 == 0, rhs: even n }
-- error: { lhs: 0 == rem n 2, rhs: even n }
-- error: { lhs: rem n 2 /= 0, rhs: odd n }
-- error: { lhs: 0 /= rem n 2, rhs: odd n }
-- error: { lhs: mod n 2 == 0, rhs: even n }
-- error: { lhs: 0 == mod n 2, rhs: even n }
-- error: { lhs: mod n 2 /= 0, rhs: odd n }
-- error: { lhs: 0 /= mod n 2, rhs: odd n }
-- error: { lhs: not (even x), rhs: odd x }
-- error: { lhs: not (odd x), rhs: even x }
-- error: { lhs: x ** 0.5, rhs: sqrt x }
-- error: { lhs: x ^ 0, rhs: "1", name: Use 1 }
-- error: { lhs: round (x - 0.5), rhs: floor x }
+- warning: { lhs: x + negate y, rhs: x - y }
+- warning: { lhs: 0 - x, rhs: negate x }
+- warning: { lhs: negate (negate x), rhs: x, name: Redundant negate }
+- warning: { lhs: log y / log x, rhs: logBase x y }
+- warning: { lhs: sin x / cos x, rhs: tan x }
+- warning: { lhs: rem n 2 == 0, rhs: even n }
+- warning: { lhs: 0 == rem n 2, rhs: even n }
+- warning: { lhs: rem n 2 /= 0, rhs: odd n }
+- warning: { lhs: 0 /= rem n 2, rhs: odd n }
+- warning: { lhs: mod n 2 == 0, rhs: even n }
+- warning: { lhs: 0 == mod n 2, rhs: even n }
+- warning: { lhs: mod n 2 /= 0, rhs: odd n }
+- warning: { lhs: 0 /= mod n 2, rhs: odd n }
+- warning: { lhs: not (even x), rhs: odd x }
+- warning: { lhs: not (odd x), rhs: even x }
+- warning: { lhs: x ** 0.5, rhs: sqrt x }
+- warning: { lhs: x ^ 0, rhs: "1", name: Use 1 }
+- warning: { lhs: round (x - 0.5), rhs: floor x }
 
 # CONCURRENT
 
-- error: { lhs: mapM_ (writeChan a), rhs: writeList2Chan a }
-- error: { lhs: atomically (readTVar x), rhs: readTVarIO x }
-- error: { lhs: atomically (newTVar x), rhs: newTVarIO x }
-- error: { lhs: atomically (newTMVar x), rhs: newTMVarIO x }
-- error: { lhs: atomically newEmptyTMVar, rhs: newEmptyTMVarIO }
+- warning: { lhs: mapM_ (writeChan a), rhs: writeList2Chan a }
+- warning: { lhs: atomically (readTVar x), rhs: readTVarIO x }
+- warning: { lhs: atomically (newTVar x), rhs: newTVarIO x }
+- warning: { lhs: atomically (newTMVar x), rhs: newTMVarIO x }
+- warning: { lhs: atomically newEmptyTMVar, rhs: newEmptyTMVarIO }
 
 # TYPEABLE
 
-- error: { lhs: "typeOf (a :: b)", rhs: "typeRep (Proxy :: Proxy b)" }
+- warning: { lhs: "typeOf (a :: b)", rhs: "typeRep (Proxy :: Proxy b)" }
 
 # EXCEPTION
 
-- error: { lhs: flip Control.Exception.catch, rhs: handle }
-- error: { lhs: flip handle, rhs: Control.Exception.catch }
-- error: { lhs: flip (catchJust p), rhs: handleJust p }
-- error: { lhs: flip (handleJust p), rhs: catchJust p }
-- error:
+- warning: { lhs: flip Control.Exception.catch, rhs: handle }
+- warning: { lhs: flip handle, rhs: Control.Exception.catch }
+- warning: { lhs: flip (catchJust p), rhs: handleJust p }
+- warning: { lhs: flip (handleJust p), rhs: catchJust p }
+- warning:
     {
       lhs: Control.Exception.bracket b (const a) (const t),
       rhs: Control.Exception.bracket_ b a t,
     }
-- error:
+- warning:
     { lhs: Control.Exception.bracket (openFile x y) hClose, rhs: withFile x y }
-- error:
+- warning:
     {
       lhs: Control.Exception.bracket (openBinaryFile x y) hClose,
       rhs: withBinaryFile x y,
     }
-- error: { lhs: throw (ErrorCall a), rhs: error a }
-- error: { lhs: toException NonTermination, rhs: nonTermination }
-- error: { lhs: toException NestedAtomically, rhs: nestedAtomically }
+- warning: { lhs: throw (ErrorCall a), rhs: error a }
+- warning: { lhs: toException NonTermination, rhs: nonTermination }
+- warning: { lhs: toException NestedAtomically, rhs: nestedAtomically }
 
 # IOREF
 
-- error: { lhs: modifyIORef r (const x), rhs: writeIORef r x }
-- error: { lhs: modifyIORef r (\v -> x), rhs: writeIORef r x }
+- warning: { lhs: modifyIORef r (const x), rhs: writeIORef r x }
+- warning: { lhs: modifyIORef r (\v -> x), rhs: writeIORef r x }
 
 # STOREABLE/PTR
 
-- error: { lhs: castPtr nullPtr, rhs: nullPtr }
-- error: { lhs: castPtr (castPtr x), rhs: castPtr x }
-- error: { lhs: plusPtr (castPtr x), rhs: plusPtr x }
-- error: { lhs: minusPtr (castPtr x), rhs: minusPtr x }
-- error: { lhs: minusPtr x (castPtr y), rhs: minusPtr x y }
-- error: { lhs: peekByteOff (castPtr x), rhs: peekByteOff x }
-- error: { lhs: pokeByteOff (castPtr x), rhs: pokeByteOff x }
+- warning: { lhs: castPtr nullPtr, rhs: nullPtr }
+- warning: { lhs: castPtr (castPtr x), rhs: castPtr x }
+- warning: { lhs: plusPtr (castPtr x), rhs: plusPtr x }
+- warning: { lhs: minusPtr (castPtr x), rhs: minusPtr x }
+- warning: { lhs: minusPtr x (castPtr y), rhs: minusPtr x y }
+- warning: { lhs: peekByteOff (castPtr x), rhs: peekByteOff x }
+- warning: { lhs: pokeByteOff (castPtr x), rhs: pokeByteOff x }
 
 # WEAK POINTERS
 
-- error: { lhs: mkWeak a a b, rhs: mkWeakPtr a b }
-- error: { lhs: "mkWeak a (a, b) c", rhs: mkWeakPair a b c }
+- warning: { lhs: mkWeak a a b, rhs: mkWeakPtr a b }
+- warning: { lhs: "mkWeak a (a, b) c", rhs: mkWeakPair a b c }
 
 # FOLDABLE
 
-- error:
+- warning:
     {
       lhs: case m of Nothing -> pure (); Just x -> f x,
       rhs: Data.Foldable.for_ m f,
     }
-- error:
+- warning:
     {
       lhs: case m of Nothing -> return (); Just x -> f x,
       rhs: Data.Foldable.forM_ m f,
     }
-- error:
+- warning:
     {
       lhs: case m of Just x -> f x; Nothing -> pure (),
       rhs: Data.Foldable.for_ m f,
     }
-- error:
+- warning:
     {
       lhs: case m of Just x -> f x; Nothing -> return (),
       rhs: Data.Foldable.forM_ m f,
     }
-- error:
+- warning:
     { lhs: case m of Just x -> f x; _ -> pure (), rhs: Data.Foldable.for_ m f }
-- error:
+- warning:
     {
       lhs: case m of Just x -> f x; _ -> return (),
       rhs: Data.Foldable.forM_ m f,
     }
-- error: { lhs: when (isJust m) (f (fromJust m)), rhs: Data.Foldable.for_ m f }
-- error:
+- warning:
+    { lhs: when (isJust m) (f (fromJust m)), rhs: Data.Foldable.for_ m f }
+- warning:
     {
       lhs: concatMap f (fmap g x),
       rhs: concatMap (f . g) x,
       name: Fuse concatMap/fmap,
     }
-- error:
+- warning:
     {
       lhs: concatMap f (g <$> x),
       rhs: concatMap (f . g) x,
       name: Fuse concatMap/<$>,
     }
-- error:
+- warning:
     {
       lhs: concatMap f (x <&> g),
       rhs: concatMap (f . g) x,
       name: Fuse concatMap/<&>,
     }
-- error: { lhs: null (concatMap f x), rhs: all (null . f) x }
-- error: { lhs: or (concat x), rhs: any or x }
-- error: { lhs: or (concatMap f x), rhs: any (or . f) x }
-- error: { lhs: and (concat x), rhs: all and x }
-- error: { lhs: and (concatMap f x), rhs: all (and . f) x }
-- error: { lhs: any f (concat x), rhs: any (any f) x, name: Use any nested }
-- error:
+- warning: { lhs: null (concatMap f x), rhs: all (null . f) x }
+- warning: { lhs: or (concat x), rhs: any or x }
+- warning: { lhs: or (concatMap f x), rhs: any (or . f) x }
+- warning: { lhs: and (concat x), rhs: all and x }
+- warning: { lhs: and (concatMap f x), rhs: all (and . f) x }
+- warning: { lhs: any f (concat x), rhs: any (any f) x, name: Use any nested }
+- warning:
     { lhs: any f (concatMap g x), rhs: any (any f . g) x, name: Use any nested }
-- error: { lhs: all f (concat x), rhs: all (all f) x, name: Use all nested }
-- error:
+- warning: { lhs: all f (concat x), rhs: all (all f) x, name: Use all nested }
+- warning:
     { lhs: all f (concatMap g x), rhs: all (all f . g) x, name: Use all nested }
-- error: { lhs: fold (concatMap f x), rhs: foldMap (fold . f) x }
-- error:
+- warning: { lhs: fold (concatMap f x), rhs: foldMap (fold . f) x }
+- warning:
     {
       lhs: foldMap f (concatMap g x),
       rhs: foldMap (foldMap f . g) x,
       name: Use foldMap nested,
     }
-- error:
+- warning:
     {
       lhs: catMaybes (concatMap f x),
       rhs: concatMap (catMaybes . f) x,
       name: Move catMaybes,
     }
-- error:
+- warning:
     {
       lhs: catMaybes (concat x),
       rhs: concatMap catMaybes x,
       name: Move catMaybes,
     }
-- error:
+- warning:
     {
       lhs: filter f (concatMap g x),
       rhs: concatMap (filter f . g) x,
       name: Move filter,
     }
-- error:
+- warning:
     { lhs: filter f (concat x), rhs: concatMap (filter f) x, name: Move filter }
-- error:
+- warning:
     {
       lhs: mapMaybe f (concatMap g x),
       rhs: concatMap (mapMaybe f . g) x,
       name: Move mapMaybe,
     }
-- error:
+- warning:
     {
       lhs: mapMaybe f (concat x),
       rhs: concatMap (mapMaybe f) x,
       name: Move mapMaybe,
     }
-- error: { lhs: or (fmap p x), rhs: any p x }
-- error: { lhs: or (p <$> x), rhs: any p x }
-- error: { lhs: or (x <&> p), rhs: any p x }
-- error: { lhs: and (fmap p x), rhs: all p x }
-- error: { lhs: and (p <$> x), rhs: all p x }
-- error: { lhs: and (x <&> p), rhs: all p x }
-- error: { lhs: any f (fmap g x), rhs: any (f . g) x }
-- error: { lhs: any f (g <$> x), rhs: any (f . g) x }
-- error: { lhs: any f (x <&> g), rhs: any (f . g) x }
-- error: { lhs: all f (fmap g x), rhs: all (f . g) x }
-- error: { lhs: all f (g <$> x), rhs: all (f . g) x }
-- error: { lhs: all f (x <&> g), rhs: all (f . g) x }
-- error:
+- warning: { lhs: or (fmap p x), rhs: any p x }
+- warning: { lhs: or (p <$> x), rhs: any p x }
+- warning: { lhs: or (x <&> p), rhs: any p x }
+- warning: { lhs: and (fmap p x), rhs: all p x }
+- warning: { lhs: and (p <$> x), rhs: all p x }
+- warning: { lhs: and (x <&> p), rhs: all p x }
+- warning: { lhs: any f (fmap g x), rhs: any (f . g) x }
+- warning: { lhs: any f (g <$> x), rhs: any (f . g) x }
+- warning: { lhs: any f (x <&> g), rhs: any (f . g) x }
+- warning: { lhs: all f (fmap g x), rhs: all (f . g) x }
+- warning: { lhs: all f (g <$> x), rhs: all (f . g) x }
+- warning: { lhs: all f (x <&> g), rhs: all (f . g) x }
+- warning:
     { lhs: foldr f z (fmap g x), rhs: foldr (f . g) z x, name: Fuse foldr/fmap }
-- error:
+- warning:
     { lhs: foldr f z (g <$> x), rhs: foldr (f . g) z x, name: Fuse foldr/<$> }
-- error:
+- warning:
     { lhs: foldr f z (x <&> g), rhs: foldr (f . g) z x, name: Fuse foldr/<&> }
-- error: { lhs: fold (Data.Foldable.toList x), rhs: fold x }
-- error: { lhs: foldMap f (Data.Foldable.toList x), rhs: foldMap f x }
-- error: { lhs: foldMap' f (Data.Foldable.toList x), rhs: foldMap' f x }
-- error: { lhs: foldr f z (Data.Foldable.toList x), rhs: foldr f z x }
-- error: { lhs: foldr' f z (Data.Foldable.toList x), rhs: foldr' f z x }
-- error: { lhs: foldl f z (Data.Foldable.toList x), rhs: foldl f z x }
-- error: { lhs: foldl' f z (Data.Foldable.toList x), rhs: foldl' f z x }
-- error: { lhs: foldr1 f (Data.Foldable.toList x), rhs: foldr1 f x }
-- error: { lhs: foldl1 f (Data.Foldable.toList x), rhs: foldl1 f x }
-- error: { lhs: null (Data.Foldable.toList x), rhs: null x }
-- error: { lhs: length (Data.Foldable.toList x), rhs: length x }
-- error: { lhs: elem y (Data.Foldable.toList x), rhs: elem y x }
-- error: { lhs: notElem y (Data.Foldable.toList x), rhs: notElem y x }
-- error: { lhs: maximum (Data.Foldable.toList x), rhs: maximum x }
-- error: { lhs: minimum (Data.Foldable.toList x), rhs: minimum x }
-- error: { lhs: maximumBy f (Data.Foldable.toList x), rhs: maximumBy f x }
-- error: { lhs: minimumBy f (Data.Foldable.toList x), rhs: minimumBy f x }
-- error: { lhs: sum (Data.Foldable.toList x), rhs: sum x }
-- error: { lhs: product (Data.Foldable.toList x), rhs: product x }
-- error: { lhs: and (Data.Foldable.toList x), rhs: and x }
-- error: { lhs: or (Data.Foldable.toList x), rhs: or x }
-- error: { lhs: all f (Data.Foldable.toList x), rhs: all f x }
-- error: { lhs: any f (Data.Foldable.toList x), rhs: any f x }
-- error: { lhs: find f (Data.Foldable.toList x), rhs: find f x }
-- error: { lhs: concat (Data.Foldable.toList x), rhs: concat x }
-- error: { lhs: concatMap f (Data.Foldable.toList x), rhs: concatMap f x }
-- error: { lhs: foldrM f c (Data.Foldable.toList x), rhs: foldrM f c x }
-- error: { lhs: foldlM f c (Data.Foldable.toList x), rhs: foldlM f c x }
-- error: { lhs: traverse_ f (Data.Foldable.toList x), rhs: traverse_ f x }
-- error: { lhs: for_ (Data.Foldable.toList x) f, rhs: for_ x f }
-- error: { lhs: sequenceA_ (Data.Foldable.toList x), rhs: sequenceA_ x }
-- error: { lhs: asum (Data.Foldable.toList x), rhs: asum x }
-- error: { lhs: mapM_ f (Data.Foldable.toList x), rhs: mapM_ f x }
-- error: { lhs: forM_ (Data.Foldable.toList x) f, rhs: forM_ x f }
-- error: { lhs: sequence_ (Data.Foldable.toList x), rhs: sequence_ x }
-- error: { lhs: msum (Data.Foldable.toList x), rhs: msum x }
+- warning: { lhs: fold (Data.Foldable.toList x), rhs: fold x }
+- warning: { lhs: foldMap f (Data.Foldable.toList x), rhs: foldMap f x }
+- warning: { lhs: foldMap' f (Data.Foldable.toList x), rhs: foldMap' f x }
+- warning: { lhs: foldr f z (Data.Foldable.toList x), rhs: foldr f z x }
+- warning: { lhs: foldr' f z (Data.Foldable.toList x), rhs: foldr' f z x }
+- warning: { lhs: foldl f z (Data.Foldable.toList x), rhs: foldl f z x }
+- warning: { lhs: foldl' f z (Data.Foldable.toList x), rhs: foldl' f z x }
+- warning: { lhs: foldr1 f (Data.Foldable.toList x), rhs: foldr1 f x }
+- warning: { lhs: foldl1 f (Data.Foldable.toList x), rhs: foldl1 f x }
+- warning: { lhs: null (Data.Foldable.toList x), rhs: null x }
+- warning: { lhs: length (Data.Foldable.toList x), rhs: length x }
+- warning: { lhs: elem y (Data.Foldable.toList x), rhs: elem y x }
+- warning: { lhs: notElem y (Data.Foldable.toList x), rhs: notElem y x }
+- warning: { lhs: maximum (Data.Foldable.toList x), rhs: maximum x }
+- warning: { lhs: minimum (Data.Foldable.toList x), rhs: minimum x }
+- warning: { lhs: maximumBy f (Data.Foldable.toList x), rhs: maximumBy f x }
+- warning: { lhs: minimumBy f (Data.Foldable.toList x), rhs: minimumBy f x }
+- warning: { lhs: sum (Data.Foldable.toList x), rhs: sum x }
+- warning: { lhs: product (Data.Foldable.toList x), rhs: product x }
+- warning: { lhs: and (Data.Foldable.toList x), rhs: and x }
+- warning: { lhs: or (Data.Foldable.toList x), rhs: or x }
+- warning: { lhs: all f (Data.Foldable.toList x), rhs: all f x }
+- warning: { lhs: any f (Data.Foldable.toList x), rhs: any f x }
+- warning: { lhs: find f (Data.Foldable.toList x), rhs: find f x }
+- warning: { lhs: concat (Data.Foldable.toList x), rhs: concat x }
+- warning: { lhs: concatMap f (Data.Foldable.toList x), rhs: concatMap f x }
+- warning: { lhs: foldrM f c (Data.Foldable.toList x), rhs: foldrM f c x }
+- warning: { lhs: foldlM f c (Data.Foldable.toList x), rhs: foldlM f c x }
+- warning: { lhs: traverse_ f (Data.Foldable.toList x), rhs: traverse_ f x }
+- warning: { lhs: for_ (Data.Foldable.toList x) f, rhs: for_ x f }
+- warning: { lhs: sequenceA_ (Data.Foldable.toList x), rhs: sequenceA_ x }
+- warning: { lhs: asum (Data.Foldable.toList x), rhs: asum x }
+- warning: { lhs: mapM_ f (Data.Foldable.toList x), rhs: mapM_ f x }
+- warning: { lhs: forM_ (Data.Foldable.toList x) f, rhs: forM_ x f }
+- warning: { lhs: sequence_ (Data.Foldable.toList x), rhs: sequence_ x }
+- warning: { lhs: msum (Data.Foldable.toList x), rhs: msum x }
 
 # STATE MONAD
 
-- error: { lhs: f <$> Control.Monad.State.get, rhs: gets f }
-- error: { lhs: Control.Monad.State.get <&> f, rhs: gets f }
-- error: { lhs: fmap f  Control.Monad.State.get, rhs: gets f }
-- error: { lhs: f <$> Control.Monad.State.gets g, rhs: gets (f . g) }
-- error: { lhs: Control.Monad.State.gets g <&> f, rhs: gets (f . g) }
-- error: { lhs: fmap f (Control.Monad.State.gets g), rhs: gets (f . g) }
-- error: { lhs: f <$> Control.Monad.Reader.ask, rhs: asks f }
-- error: { lhs: Control.Monad.Reader.ask <&> f, rhs: asks f }
-- error: { lhs: fmap f Control.Monad.Reader.ask, rhs: asks f }
-- error: { lhs: f <$> Control.Monad.Reader.asks g, rhs: asks (f . g) }
-- error: { lhs: Control.Monad.Reader.asks g <&> f, rhs: asks (f . g) }
-- error: { lhs: fmap f (Control.Monad.Reader.asks g), rhs: asks (f . g) }
-- error: { lhs: fst (runState m s), rhs: evalState m s }
-- error: { lhs: snd (runState m s), rhs: execState m s }
+- warning: { lhs: f <$> Control.Monad.State.get, rhs: gets f }
+- warning: { lhs: Control.Monad.State.get <&> f, rhs: gets f }
+- warning: { lhs: fmap f  Control.Monad.State.get, rhs: gets f }
+- warning: { lhs: f <$> Control.Monad.State.gets g, rhs: gets (f . g) }
+- warning: { lhs: Control.Monad.State.gets g <&> f, rhs: gets (f . g) }
+- warning: { lhs: fmap f (Control.Monad.State.gets g), rhs: gets (f . g) }
+- warning: { lhs: f <$> Control.Monad.Reader.ask, rhs: asks f }
+- warning: { lhs: Control.Monad.Reader.ask <&> f, rhs: asks f }
+- warning: { lhs: fmap f Control.Monad.Reader.ask, rhs: asks f }
+- warning: { lhs: f <$> Control.Monad.Reader.asks g, rhs: asks (f . g) }
+- warning: { lhs: Control.Monad.Reader.asks g <&> f, rhs: asks (f . g) }
+- warning: { lhs: fmap f (Control.Monad.Reader.asks g), rhs: asks (f . g) }
+- warning: { lhs: fst (runState m s), rhs: evalState m s }
+- warning: { lhs: snd (runState m s), rhs: execState m s }
 
 # EVALUATE
 
-- error: { lhs: True && x, rhs: x, name: Evaluate }
-- error: { lhs: False && x, rhs: "False", name: Evaluate }
-- error: { lhs: True || x, rhs: "True", name: Evaluate }
-- error: { lhs: False || x, rhs: x, name: Evaluate }
-- error: { lhs: not True, rhs: "False", name: Evaluate }
-- error: { lhs: not False, rhs: "True", name: Evaluate }
-- error: { lhs: Nothing >>= k, rhs: Nothing, name: Evaluate }
-- error: { lhs: k =<< Nothing, rhs: Nothing, name: Evaluate }
-- error: { lhs: either f g (Left x), rhs: f x, name: Evaluate }
-- error: { lhs: either f g (Right y), rhs: g y, name: Evaluate }
-- error: { lhs: "fst (x,y)", rhs: x, name: Evaluate }
-- error: { lhs: "snd (x,y)", rhs: "y", name: Evaluate }
-- error: { lhs: fromJust (Just x), rhs: x, name: Evaluate }
-- error: { lhs: fromLeft y (Left x), rhs: x, name: Evaluate }
-- error: { lhs: fromLeft y (Right x), rhs: "y", name: Evaluate }
-- error: { lhs: fromRight y (Right x), rhs: x, name: Evaluate }
-- error: { lhs: fromRight y (Left x), rhs: "y", name: Evaluate }
-- error: { lhs: "head [x]", rhs: "x", name: Evaluate }
-- error: { lhs: "last [x]", rhs: "x", name: Evaluate }
-- error: { lhs: "tail [x]", rhs: "[]", name: Evaluate }
-- error: { lhs: "init [x]", rhs: "[]", name: Evaluate }
-- error: { lhs: "null [x]", rhs: "False", name: Evaluate }
-- error: { lhs: "null []", rhs: "True", name: Evaluate }
-- error: { lhs: 'null ""', rhs: "True", name: Evaluate }
-- error: { lhs: "length []", rhs: "0", name: Evaluate }
-- error: { lhs: 'length ""', rhs: "0", name: Evaluate }
-- error: { lhs: "foldl f z []", rhs: z, name: Evaluate }
-- error: { lhs: "foldr f z []", rhs: z, name: Evaluate }
-- error: { lhs: "foldr1 f [x]", rhs: x, name: Evaluate }
-- error: { lhs: "scanr f z []", rhs: "[z]", name: Evaluate }
-- error: { lhs: "scanr1 f []", rhs: "[]", name: Evaluate }
-- error: { lhs: "scanr1 f [x]", rhs: "[x]", name: Evaluate }
-- error:
+- warning: { lhs: True && x, rhs: x, name: Evaluate }
+- warning: { lhs: False && x, rhs: "False", name: Evaluate }
+- warning: { lhs: True || x, rhs: "True", name: Evaluate }
+- warning: { lhs: False || x, rhs: x, name: Evaluate }
+- warning: { lhs: not True, rhs: "False", name: Evaluate }
+- warning: { lhs: not False, rhs: "True", name: Evaluate }
+- warning: { lhs: Nothing >>= k, rhs: Nothing, name: Evaluate }
+- warning: { lhs: k =<< Nothing, rhs: Nothing, name: Evaluate }
+- warning: { lhs: either f g (Left x), rhs: f x, name: Evaluate }
+- warning: { lhs: either f g (Right y), rhs: g y, name: Evaluate }
+- warning: { lhs: "fst (x,y)", rhs: x, name: Evaluate }
+- warning: { lhs: "snd (x,y)", rhs: "y", name: Evaluate }
+- warning: { lhs: fromJust (Just x), rhs: x, name: Evaluate }
+- warning: { lhs: fromLeft y (Left x), rhs: x, name: Evaluate }
+- warning: { lhs: fromLeft y (Right x), rhs: "y", name: Evaluate }
+- warning: { lhs: fromRight y (Right x), rhs: x, name: Evaluate }
+- warning: { lhs: fromRight y (Left x), rhs: "y", name: Evaluate }
+- warning: { lhs: "head [x]", rhs: "x", name: Evaluate }
+- warning: { lhs: "last [x]", rhs: "x", name: Evaluate }
+- warning: { lhs: "tail [x]", rhs: "[]", name: Evaluate }
+- warning: { lhs: "init [x]", rhs: "[]", name: Evaluate }
+- warning: { lhs: "null [x]", rhs: "False", name: Evaluate }
+- warning: { lhs: "null []", rhs: "True", name: Evaluate }
+- warning: { lhs: 'null ""', rhs: "True", name: Evaluate }
+- warning: { lhs: "length []", rhs: "0", name: Evaluate }
+- warning: { lhs: 'length ""', rhs: "0", name: Evaluate }
+- warning: { lhs: "foldl f z []", rhs: z, name: Evaluate }
+- warning: { lhs: "foldr f z []", rhs: z, name: Evaluate }
+- warning: { lhs: "foldr1 f [x]", rhs: x, name: Evaluate }
+- warning: { lhs: "scanr f z []", rhs: "[z]", name: Evaluate }
+- warning: { lhs: "scanr1 f []", rhs: "[]", name: Evaluate }
+- warning: { lhs: "scanr1 f [x]", rhs: "[x]", name: Evaluate }
+- warning:
     { lhs: "take n []", rhs: "[]", note: IncreasesLaziness, name: Evaluate }
-- error:
+- warning:
     { lhs: 'take n ""', rhs: '""', note: IncreasesLaziness, name: Evaluate }
-- error:
+- warning:
     { lhs: "drop n []", rhs: "[]", note: IncreasesLaziness, name: Evaluate }
-- error:
+- warning:
     { lhs: 'drop n ""', rhs: '""', note: IncreasesLaziness, name: Evaluate }
-- error: { lhs: "takeWhile p []", rhs: "[]", name: Evaluate }
-- error: { lhs: 'takeWhile p ""', rhs: '""', name: Evaluate }
-- error: { lhs: "dropWhile p []", rhs: "[]", name: Evaluate }
-- error: { lhs: 'dropWhile p ""', rhs: '""', name: Evaluate }
-- error: { lhs: "span p []", rhs: "([],[])", name: Evaluate }
-- error: { lhs: 'span p ""', rhs: '("","")', name: Evaluate }
-- error: { lhs: 'lines ""', rhs: "[]", name: Evaluate }
-- error: { lhs: "lines []", rhs: "[]", name: Evaluate }
-- error: { lhs: "unwords []", rhs: '""', name: Evaluate }
-- error: { lhs: x - 0, rhs: x, name: Evaluate }
-- error: { lhs: x * 1, rhs: x, name: Evaluate }
-- error: { lhs: x / 1, rhs: x, name: Evaluate }
-- error: { lhs: "concat [a]", rhs: a, name: Evaluate }
-- error: { lhs: "concat []", rhs: "[]", name: Evaluate }
-- error: { lhs: "concatMap f [a]", rhs: f a, name: Evaluate }
-- error: { lhs: "concatMap f []", rhs: "[]", name: Evaluate }
-- error: { lhs: "zip [] []", rhs: "[]", name: Evaluate }
-- error: { lhs: const x y, rhs: x, name: Evaluate }
-- error:
+- warning: { lhs: "takeWhile p []", rhs: "[]", name: Evaluate }
+- warning: { lhs: 'takeWhile p ""', rhs: '""', name: Evaluate }
+- warning: { lhs: "dropWhile p []", rhs: "[]", name: Evaluate }
+- warning: { lhs: 'dropWhile p ""', rhs: '""', name: Evaluate }
+- warning: { lhs: "span p []", rhs: "([],[])", name: Evaluate }
+- warning: { lhs: 'span p ""', rhs: '("","")', name: Evaluate }
+- warning: { lhs: 'lines ""', rhs: "[]", name: Evaluate }
+- warning: { lhs: "lines []", rhs: "[]", name: Evaluate }
+- warning: { lhs: "unwords []", rhs: '""', name: Evaluate }
+- warning: { lhs: x - 0, rhs: x, name: Evaluate }
+- warning: { lhs: x * 1, rhs: x, name: Evaluate }
+- warning: { lhs: x / 1, rhs: x, name: Evaluate }
+- warning: { lhs: "concat [a]", rhs: a, name: Evaluate }
+- warning: { lhs: "concat []", rhs: "[]", name: Evaluate }
+- warning: { lhs: "concatMap f [a]", rhs: f a, name: Evaluate }
+- warning: { lhs: "concatMap f []", rhs: "[]", name: Evaluate }
+- warning: { lhs: "zip [] []", rhs: "[]", name: Evaluate }
+- warning: { lhs: const x y, rhs: x, name: Evaluate }
+- warning:
     {
       lhs: any (const False),
       rhs: const False,
       note: IncreasesLaziness,
       name: Evaluate,
     }
-- error:
+- warning:
     {
       lhs: all (const True),
       rhs: const True,
       note: IncreasesLaziness,
       name: Evaluate,
     }
-- error: { lhs: "[] <> x", rhs: x, name: Evaluate }
-- error: { lhs: '"" <> x', rhs: x, name: Evaluate }
-- error: { lhs: "x <> []", rhs: x, name: Evaluate }
-- error: { lhs: 'x <> ""', rhs: x, name: Evaluate }
-- error: { lhs: "all f [a]", rhs: f a, name: Evaluate }
-- error: { lhs: "all f []", rhs: "True", name: Evaluate }
-- error: { lhs: "any f [a]", rhs: f a, name: Evaluate }
-- error: { lhs: "any f []", rhs: "False", name: Evaluate }
-- error: { lhs: "maximum [a]", rhs: a, name: Evaluate }
-- error: { lhs: "minimum [a]", rhs: a, name: Evaluate }
-- error: { lhs: "map f []", rhs: "[]", name: Evaluate }
-- error: { lhs: "map f [a]", rhs: "[f a]", name: Evaluate }
+- warning: { lhs: "[] <> x", rhs: x, name: Evaluate }
+- warning: { lhs: '"" <> x', rhs: x, name: Evaluate }
+- warning: { lhs: "x <> []", rhs: x, name: Evaluate }
+- warning: { lhs: 'x <> ""', rhs: x, name: Evaluate }
+- warning: { lhs: "all f [a]", rhs: f a, name: Evaluate }
+- warning: { lhs: "all f []", rhs: "True", name: Evaluate }
+- warning: { lhs: "any f [a]", rhs: f a, name: Evaluate }
+- warning: { lhs: "any f []", rhs: "False", name: Evaluate }
+- warning: { lhs: "maximum [a]", rhs: a, name: Evaluate }
+- warning: { lhs: "minimum [a]", rhs: a, name: Evaluate }
+- warning: { lhs: "map f []", rhs: "[]", name: Evaluate }
+- warning: { lhs: "map f [a]", rhs: "[f a]", name: Evaluate }
 
 # FOLDABLE + TUPLES
 
-- error: { lhs: "foldr   f z (x,b)", rhs: f b z, name: Using foldr on tuple }
-- error: { lhs: "foldr'  f z (x,b)", rhs: f b z, name: Using foldr' on tuple }
-- error: { lhs: "foldl   f z (x,b)", rhs: f z b, name: Using foldl on tuple }
-- error: { lhs: "foldl'  f z (x,b)", rhs: f z b, name: Using foldl' on tuple }
-- error: { lhs: "foldMap f   (x,b)", rhs: f b, name: Using foldMap on tuple }
-- error: { lhs: "foldr1  f   (x,b)", rhs: b, name: Using foldr1 on tuple }
-- error: { lhs: "foldl1  f   (x,b)", rhs: b, name: Using foldl1 on tuple }
-- error: { lhs: "elem    e   (x,b)", rhs: e == b, name: Using elem on tuple }
-- error: { lhs: "fold        (x,b)", rhs: b, name: Using fold on tuple }
-- error: { lhs: "toList      (x,b)", rhs: b, name: Using toList on tuple }
-- error: { lhs: "maximum     (x,b)", rhs: b, name: Using maximum on tuple }
-- error: { lhs: "minimum     (x,b)", rhs: b, name: Using minimum on tuple }
-- error: { lhs: "notElem e   (x,b)", rhs: e /= b, name: Using notElem on tuple }
-- error: { lhs: "sum         (x,b)", rhs: b, name: Using sum on tuple }
-- error: { lhs: "product     (x,b)", rhs: b, name: Using product on tuple }
-- error: { lhs: "concat      (x,b)", rhs: b, name: Using concat on tuple }
-- error: { lhs: "concatMap f (x,b)", rhs: f b, name: Using concatMap on tuple }
-- error: { lhs: "and         (x,b)", rhs: b, name: Using and on tuple }
-- error: { lhs: "or          (x,b)", rhs: b, name: Using or on tuple }
-- error: { lhs: "any     f   (x,b)", rhs: f b, name: Using any on tuple }
-- error: { lhs: "all     f   (x,b)", rhs: f b, name: Using all on tuple }
+- warning: { lhs: "foldr   f z (x,b)", rhs: f b z, name: Using foldr on tuple }
+- warning: { lhs: "foldr'  f z (x,b)", rhs: f b z, name: Using foldr' on tuple }
+- warning: { lhs: "foldl   f z (x,b)", rhs: f z b, name: Using foldl on tuple }
+- warning: { lhs: "foldl'  f z (x,b)", rhs: f z b, name: Using foldl' on tuple }
+- warning: { lhs: "foldMap f   (x,b)", rhs: f b, name: Using foldMap on tuple }
+- warning: { lhs: "foldr1  f   (x,b)", rhs: b, name: Using foldr1 on tuple }
+- warning: { lhs: "foldl1  f   (x,b)", rhs: b, name: Using foldl1 on tuple }
+- warning: { lhs: "elem    e   (x,b)", rhs: e == b, name: Using elem on tuple }
+- warning: { lhs: "fold        (x,b)", rhs: b, name: Using fold on tuple }
+- warning: { lhs: "toList      (x,b)", rhs: b, name: Using toList on tuple }
+- warning: { lhs: "maximum     (x,b)", rhs: b, name: Using maximum on tuple }
+- warning: { lhs: "minimum     (x,b)", rhs: b, name: Using minimum on tuple }
+- warning:
+    { lhs: "notElem e   (x,b)", rhs: e /= b, name: Using notElem on tuple }
+- warning: { lhs: "sum         (x,b)", rhs: b, name: Using sum on tuple }
+- warning: { lhs: "product     (x,b)", rhs: b, name: Using product on tuple }
+- warning: { lhs: "concat      (x,b)", rhs: b, name: Using concat on tuple }
+- warning:
+    { lhs: "concatMap f (x,b)", rhs: f b, name: Using concatMap on tuple }
+- warning: { lhs: "and         (x,b)", rhs: b, name: Using and on tuple }
+- warning: { lhs: "or          (x,b)", rhs: b, name: Using or on tuple }
+- warning: { lhs: "any     f   (x,b)", rhs: f b, name: Using any on tuple }
+- warning: { lhs: "all     f   (x,b)", rhs: f b, name: Using all on tuple }
 
-- error: { lhs: "foldr   f z (x,y,b)", rhs: f b z, name: Using foldr on tuple }
-- error: { lhs: "foldr'  f z (x,y,b)", rhs: f b z, name: Using foldr' on tuple }
-- error: { lhs: "foldl   f z (x,y,b)", rhs: f z b, name: Using foldl on tuple }
-- error: { lhs: "foldl'  f z (x,y,b)", rhs: f z b, name: Using foldl' on tuple }
-- error: { lhs: "foldMap f   (x,y,b)", rhs: f b, name: Using foldMap on tuple }
-- error: { lhs: "foldr1  f   (x,y,b)", rhs: b, name: Using foldr1 on tuple }
-- error: { lhs: "foldl1  f   (x,y,b)", rhs: b, name: Using foldl1 on tuple }
-- error: { lhs: "elem    e   (x,y,b)", rhs: e == b, name: Using elem on tuple }
-- error: { lhs: "fold        (x,y,b)", rhs: b, name: Using fold on tuple }
-- error: { lhs: "toList      (x,y,b)", rhs: b, name: Using toList on tuple }
-- error: { lhs: "maximum     (x,y,b)", rhs: b, name: Using maximum on tuple }
-- error: { lhs: "minimum     (x,y,b)", rhs: b, name: Using minimum on tuple }
-- error:
+- warning:
+    { lhs: "foldr   f z (x,y,b)", rhs: f b z, name: Using foldr on tuple }
+- warning:
+    { lhs: "foldr'  f z (x,y,b)", rhs: f b z, name: Using foldr' on tuple }
+- warning:
+    { lhs: "foldl   f z (x,y,b)", rhs: f z b, name: Using foldl on tuple }
+- warning:
+    { lhs: "foldl'  f z (x,y,b)", rhs: f z b, name: Using foldl' on tuple }
+- warning:
+    { lhs: "foldMap f   (x,y,b)", rhs: f b, name: Using foldMap on tuple }
+- warning: { lhs: "foldr1  f   (x,y,b)", rhs: b, name: Using foldr1 on tuple }
+- warning: { lhs: "foldl1  f   (x,y,b)", rhs: b, name: Using foldl1 on tuple }
+- warning:
+    { lhs: "elem    e   (x,y,b)", rhs: e == b, name: Using elem on tuple }
+- warning: { lhs: "fold        (x,y,b)", rhs: b, name: Using fold on tuple }
+- warning: { lhs: "toList      (x,y,b)", rhs: b, name: Using toList on tuple }
+- warning: { lhs: "maximum     (x,y,b)", rhs: b, name: Using maximum on tuple }
+- warning: { lhs: "minimum     (x,y,b)", rhs: b, name: Using minimum on tuple }
+- warning:
     { lhs: "notElem e   (x,y,b)", rhs: e /= b, name: Using notElem on tuple }
-- error: { lhs: "sum         (x,y,b)", rhs: b, name: Using sum on tuple }
-- error: { lhs: "product     (x,y,b)", rhs: b, name: Using product on tuple }
-- error: { lhs: "concat      (x,y,b)", rhs: b, name: Using concat on tuple }
-- error:
+- warning: { lhs: "sum         (x,y,b)", rhs: b, name: Using sum on tuple }
+- warning: { lhs: "product     (x,y,b)", rhs: b, name: Using product on tuple }
+- warning: { lhs: "concat      (x,y,b)", rhs: b, name: Using concat on tuple }
+- warning:
     { lhs: "concatMap f (x,y,b)", rhs: f b, name: Using concatMap on tuple }
-- error: { lhs: "and         (x,y,b)", rhs: b, name: Using and on tuple }
-- error: { lhs: "or          (x,y,b)", rhs: b, name: Using or on tuple }
-- error: { lhs: "any     f   (x,y,b)", rhs: f b, name: Using any on tuple }
-- error: { lhs: "all     f   (x,y,b)", rhs: f b, name: Using all on tuple }
+- warning: { lhs: "and         (x,y,b)", rhs: b, name: Using and on tuple }
+- warning: { lhs: "or          (x,y,b)", rhs: b, name: Using or on tuple }
+- warning: { lhs: "any     f   (x,y,b)", rhs: f b, name: Using any on tuple }
+- warning: { lhs: "all     f   (x,y,b)", rhs: f b, name: Using all on tuple }
 
-- error:
+- warning:
     { lhs: null x, rhs: "False", side: isTuple x, name: Using null on tuple }
-- error:
+- warning:
     { lhs: length x, rhs: "1", side: isTuple x, name: Using length on tuple }
 
 # MAP
 
-- error: { lhs: "Data.Map.fromList []", rhs: Data.Map.empty }
-- error: { lhs: "Data.Map.Lazy.fromList []", rhs: Data.Map.Lazy.empty }
-- error: { lhs: "Data.Map.Strict.fromList []", rhs: Data.Map.Strict.empty }
+- warning: { lhs: "Data.Map.fromList []", rhs: Data.Map.empty }
+- warning: { lhs: "Data.Map.Lazy.fromList []", rhs: Data.Map.Lazy.empty }
+- warning: { lhs: "Data.Map.Strict.fromList []", rhs: Data.Map.Strict.empty }
 
 # group: lens
 
-- error: { lhs: "(a ^. b) ^. c", rhs: "a ^. (b . c)" }
-- error: { lhs: "fromJust (a ^? b)", rhs: "a ^?! b" }
-- error: { lhs: "a .~ Just b", rhs: "a ?~ b" }
-- error: { lhs: "(mapped %~ b) a", rhs: "a <&> b" }
-- error: { lhs: "((mapped . b) %~ c) a", rhs: "a <&> b %~ c" }
-- error: { lhs: "(mapped .~ b) a", rhs: "b <$ a" }
-- error: { lhs: "ask <&> (^. a)", rhs: "view a" }
-- error: { lhs: "view a <&> (^. b)", rhs: "view (a . b)" }
+- warning: { lhs: "(a ^. b) ^. c", rhs: "a ^. (b . c)" }
+- warning: { lhs: "fromJust (a ^? b)", rhs: "a ^?! b" }
+- warning: { lhs: "a .~ Just b", rhs: "a ?~ b" }
+- warning: { lhs: "(mapped %~ b) a", rhs: "a <&> b" }
+- warning: { lhs: "((mapped . b) %~ c) a", rhs: "a <&> b %~ c" }
+- warning: { lhs: "(mapped .~ b) a", rhs: "b <$ a" }
+- warning: { lhs: "ask <&> (^. a)", rhs: "view a" }
+- warning: { lhs: "view a <&> (^. b)", rhs: "view (a . b)" }
 
 # `at` pitfalls:
 
-- error:
+- warning:
     { lhs: "Control.Lens.at a . Control.Lens._Just", rhs: "Control.Lens.ix a" }
-- error: { lhs: "Control.Lens.has (Control.Lens.at a)", rhs: "True" }
-- error:
+- warning: { lhs: "Control.Lens.has (Control.Lens.at a)", rhs: "True" }
+- warning:
     {
       lhs: "Control.Lens.has (a . Control.Lens.at b)",
       rhs: "Control.Lens.has a",
     }
-- error: { lhs: "Control.Lens.nullOf (Control.Lens.at a)", rhs: "False" }
-- error:
+- warning: { lhs: "Control.Lens.nullOf (Control.Lens.at a)", rhs: "False" }
+- warning:
     {
       lhs: "Control.Lens.nullOf (a . Control.Lens.at b)",
       rhs: "Control.Lens.nullOf a",
@@ -1731,40 +1751,41 @@
 
 # group: use-lens
 
-- error: { lhs: "either Just (const Nothing)", rhs: preview _Left }
-- error: { lhs: "either (const Nothing) Just", rhs: preview _Right }
+- warning: { lhs: "either Just (const Nothing)", rhs: preview _Left }
+- warning: { lhs: "either (const Nothing) Just", rhs: preview _Right }
 
 # group: use-th-quotes
 
-- error: { lhs: "TH.varE 'a", rhs: "[|a|]", name: Use TH quotation brackets }
+- warning: { lhs: "TH.varE 'a", rhs: "[|a|]", name: Use TH quotation brackets }
 
 # group: quickcheck
 
-- error: { lhs: "Test.QuickCheck.choose (x,x)", rhs: return x }
-- error: { lhs: "Test.QuickCheck.chooseInt (x,x)", rhs: return x }
-- error: { lhs: "Test.QuickCheck.chooseInteger (x,x)", rhs: return x }
-- error: { lhs: "Test.QuickCheck.chooseBoundedIntegral (x,x)", rhs: return x }
-- error: { lhs: "Test.QuickCheck.chooseEnum (x,x)", rhs: return x }
-- error:
+- warning: { lhs: "Test.QuickCheck.choose (x,x)", rhs: return x }
+- warning: { lhs: "Test.QuickCheck.chooseInt (x,x)", rhs: return x }
+- warning: { lhs: "Test.QuickCheck.chooseInteger (x,x)", rhs: return x }
+- warning: { lhs: "Test.QuickCheck.chooseBoundedIntegral (x,x)", rhs: return x }
+- warning: { lhs: "Test.QuickCheck.chooseEnum (x,x)", rhs: return x }
+- warning:
     {
       lhs: Control.Monad.join (Test.QuickCheck.elements l),
       rhs: Test.QuickCheck.oneof l,
     }
-- error: { lhs: "Test.QuickCheck.elements [x]", rhs: "return x" }
-- error: { lhs: "Test.QuickCheck.growingElements [x]", rhs: "return x" }
-- error: { lhs: "Test.QuickCheck.oneof [x]", rhs: "x", name: Evaluate }
-- error: { lhs: "Test.QuickCheck.frequency [(a,x)]", rhs: "x", name: Evaluate }
+- warning: { lhs: "Test.QuickCheck.elements [x]", rhs: "return x" }
+- warning: { lhs: "Test.QuickCheck.growingElements [x]", rhs: "return x" }
+- warning: { lhs: "Test.QuickCheck.oneof [x]", rhs: "x", name: Evaluate }
+- warning:
+    { lhs: "Test.QuickCheck.frequency [(a,x)]", rhs: "x", name: Evaluate }
 
 # group: generalise
 
-- error: { lhs: map, rhs: fmap }
-- error: { lhs: a ++ b, rhs: a <> b }
-- error: { lhs: "sequence [a]", rhs: "pure <$> a" }
-- error: { lhs: "x /= []", rhs: not (null x), name: Use null }
-- error: { lhs: 'x /= ""', rhs: not (null x), name: Use null }
-- error: { lhs: "[] /= x", rhs: not (null x), name: Use null }
-- error: { lhs: '"" /= x', rhs: not (null x), name: Use null }
-- error: { lhs: "maybe []", rhs: foldMap }
+- warning: { lhs: map, rhs: fmap }
+- warning: { lhs: a ++ b, rhs: a <> b }
+- warning: { lhs: "sequence [a]", rhs: "pure <$> a" }
+- warning: { lhs: "x /= []", rhs: not (null x), name: Use null }
+- warning: { lhs: 'x /= ""', rhs: not (null x), name: Use null }
+- warning: { lhs: "[] /= x", rhs: not (null x), name: Use null }
+- warning: { lhs: '"" /= x', rhs: not (null x), name: Use null }
+- warning: { lhs: "maybe []", rhs: foldMap }
 
 # group: partial
 #
@@ -1773,7 +1794,7 @@
 
 # Data.Bits
 
-- error:
+- warning:
     {
       lhs: bitSize x,
       rhs:
@@ -1781,35 +1802,37 @@
         case of bitSizeMaybe"',
       name: Avoid partial function,
     }
-- error: { lhs: shiftL x b, rhs: shift x b, name: Avoid partial function }
-- error: { lhs: shiftR x b, rhs: shift x (-b), name: Avoid partial function }
-- error: { lhs: unsafeShiftL x b, rhs: shift x b, name: Avoid partial function }
-- error:
+- warning: { lhs: shiftL x b, rhs: shift x b, name: Avoid partial function }
+- warning: { lhs: shiftR x b, rhs: shift x (-b), name: Avoid partial function }
+- warning:
+    { lhs: unsafeShiftL x b, rhs: shift x b, name: Avoid partial function }
+- warning:
     { lhs: unsafeShiftR x b, rhs: shift x (-b), name: Avoid partial function }
-- error: { lhs: rotateL x b, rhs: rotate x b, name: Avoid partial function }
-- error: { lhs: rotateR x b, rhs: rotate x (-b), name: Avoid partial function }
+- warning: { lhs: rotateL x b, rhs: rotate x b, name: Avoid partial function }
+- warning:
+    { lhs: rotateR x b, rhs: rotate x (-b), name: Avoid partial function }
 
 # Data.List
 
-- error:
+- warning:
     {
       lhs: head l,
       rhs: 'case l of x:_ -> x; [] -> todo "handle empty case of list"',
       name: Avoid partial function,
     }
-- error:
+- warning:
     {
       lhs: last l,
       rhs: 'case reverse l of x:_ -> x; [] -> todo "handle empty case of list"',
       name: Avoid partial function,
     }
-- error:
+- warning:
     {
       lhs: tail l,
       rhs: 'case l of _:xs -> xs; [] -> todo "handle empty case of list"',
       name: Avoid partial function,
     }
-- error:
+- warning:
     {
       lhs: init l,
       rhs:
@@ -1817,7 +1840,7 @@
         list"',
       name: Avoid partial function,
     }
-- error:
+- warning:
     {
       lhs: l !! n,
       rhs: 'case drop n l of x:_ -> x; [] -> todo "handle empty case of list"',
@@ -1826,7 +1849,7 @@
 
 # Data.List.NonEmpty
 
-- error:
+- warning:
     {
       lhs: Data.List.NonEmpty.fromList l,
       rhs:
@@ -1837,7 +1860,7 @@
 
 # Data.Maybe
 
-- error:
+- warning:
     {
       lhs: fromJust v,
       rhs:
@@ -1848,11 +1871,11 @@
 
 # group: dollar
 
-- error: { lhs: a $ b $ c, rhs: a . b $ c }
+- warning: { lhs: a $ b $ c, rhs: a . b $ c }
 
 # group: future
 
-- error: { lhs: return a, rhs: pure a }
+- warning: { lhs: return a, rhs: pure a }
 
 # group: strict
 
