@@ -1,0 +1,10 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "haskell-stack-agentic-template:lib"
+
+    - path: "./app/Main.hs"
+      component: "haskell-stack-agentic-template:exe:haskell-stack-agentic-template-exe"
+
+    - path: "./test"
+      component: "haskell-stack-agentic-template:test:haskell-stack-agentic-template-test"

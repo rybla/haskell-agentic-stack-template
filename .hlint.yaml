@@ -1,0 +1,2327 @@
+# ignore
+
+- ignore: { name: "Use newtype instead of data" }
+- ignore: { name: "Eta reduce" }
+
+# custom
+
+- functions:
+    - {
+        name: "todo",
+        within: [Utilities.Unsafe],
+        message:
+          "This is a placeholder. Replace this with a correct implementation
+          according to the functionality described by the message provided as
+          the first argument to this function.",
+      }
+    - {
+        name: "error",
+        within: [Utilities.Unsafe],
+        message:
+          "Always prefer pure approaches instead. Consider lifting this
+          functionality into a monadic action that implements MonadError.",
+      }
+    - {
+        name: "undefined",
+        within: [],
+        message:
+          "Always prefer pure approaches instead. Consider lifting this
+          functionality into a monadic action that implements MonadError.",
+      }
+
+# group: default
+
+# I/O
+
+- error: { lhs: putStrLn (show x), rhs: print x }
+- error: { lhs: putStr (x <> "\n"), rhs: putStrLn x }
+- error: { lhs: putStr (x <> y <> "\n"), rhs: putStrLn (x <> y) }
+- error: { lhs: mapM_ putChar, rhs: putStr }
+- error: { lhs: hGetChar stdin, rhs: getChar }
+- error: { lhs: hGetLine stdin, rhs: getLine }
+- error: { lhs: hGetContents stdin, rhs: getContents }
+- error: { lhs: hPutChar stdout, rhs: putChar }
+- error: { lhs: hPutStr stdout, rhs: putStr }
+- error: { lhs: hPutStrLn stdout, rhs: putStrLn }
+- error: { lhs: hPrint stdout, rhs: print }
+- error: { lhs: hWaitForInput a 0, rhs: hReady a }
+- error: { lhs: hPutStrLn a (show b), rhs: hPrint a b }
+- error: { lhs: hIsEOF stdin, rhs: isEOF }
+- error: { lhs: withFile f WriteMode (\h -> hPutStr h x), rhs: writeFile f x }
+- error:
+    {
+      lhs: withFile f WriteMode (\h -> hPutStrLn h x),
+      rhs: writeFile f (x <> "\n"),
+    }
+- error: { lhs: withFile f AppendMode (\h -> hPutStr h x), rhs: appendFile f x }
+- error:
+    {
+      lhs: withFile f AppendMode (\h -> hPutStrLn h x),
+      rhs: appendFile f (x <> "\n"),
+    }
+
+# EXIT
+
+- error: { lhs: exitWith ExitSuccess, rhs: exitSuccess }
+
+# ORD
+
+- error:
+    { lhs: not (a == b), rhs: a /= b, note: incorrect if either value is NaN }
+- error:
+    { lhs: not (a /= b), rhs: a == b, note: incorrect if either value is NaN }
+- error:
+    { lhs: not (a >  b), rhs: a <= b, note: incorrect if either value is NaN }
+- error:
+    { lhs: not (a >= b), rhs: a <  b, note: incorrect if either value is NaN }
+- error:
+    { lhs: not (a <  b), rhs: a >= b, note: incorrect if either value is NaN }
+- error:
+    { lhs: not (a <= b), rhs: a >  b, note: incorrect if either value is NaN }
+- error: { lhs: compare x y /= GT, rhs: x <= y }
+- error: { lhs: compare x y == LT, rhs: x < y }
+- error: { lhs: compare x y /= LT, rhs: x >= y }
+- error: { lhs: compare x y == GT, rhs: x > y }
+- error: { lhs: compare x y == EQ, rhs: x == y }
+- error: { lhs: compare x y /= EQ, rhs: x /= y }
+- error: { lhs: head (sort x), rhs: minimum x }
+- error: { lhs: last (sort x), rhs: maximum x }
+- error: { lhs: head (sortBy f x), rhs: minimumBy f x, side: isCompare f }
+- error: { lhs: last (sortBy f x), rhs: maximumBy f x, side: isCompare f }
+- error:
+    {
+      lhs: reverse (sortBy f x),
+      rhs: sortBy (flip f) x,
+      name: Avoid reverse,
+      side: isCompare f,
+      note: Stabilizes sort order,
+    }
+- error:
+    {
+      lhs: sortBy (flip (comparing f)),
+      rhs: sortBy (comparing (Data.Ord.Down . f)),
+    }
+- error:
+    {
+      lhs: reverse (sortOn f x),
+      rhs: sortOn (Data.Ord.Down . f) x,
+      name: Avoid reverse,
+      note: Stabilizes sort order,
+    }
+- error:
+    {
+      lhs: reverse (sort x),
+      rhs: sortBy (comparing Data.Ord.Down) x,
+      name: Avoid reverse,
+      note: Stabilizes sort order,
+    }
+- error: { lhs: flip (g `on` h), rhs: flip g `on` h, name: Move flip }
+- error: { lhs: (f `on` g) `on` h, rhs: f `on` (g . h), name: Use on once }
+- error: { lhs: if a >= b then a else b, rhs: max a b }
+- error: { lhs: if a >= b then b else a, rhs: min a b }
+- error: { lhs: if a > b then a else b, rhs: max a b }
+- error: { lhs: if a > b then b else a, rhs: min a b }
+- error: { lhs: if a <= b then a else b, rhs: min a b }
+- error: { lhs: if a <= b then b else a, rhs: max a b }
+- error: { lhs: if a < b then a else b, rhs: min a b }
+- error: { lhs: if a < b then b else a, rhs: max a b }
+- error: { lhs: "maximum [a, b]", rhs: max a b }
+- error: { lhs: "minimum [a, b]", rhs: min a b }
+
+# READ/SHOW
+
+- error: { lhs: showsPrec 0 x "", rhs: show x }
+- error: { lhs: "showsPrec 0 x []", rhs: show x }
+- error: { lhs: readsPrec 0, rhs: reads }
+- error: { lhs: showsPrec 0, rhs: shows }
+- error: { lhs: showIntAtBase 16 intToDigit, rhs: showHex }
+- error: { lhs: showIntAtBase 8 intToDigit, rhs: showOct }
+
+# LIST
+
+- error: { lhs: concat (map f x), rhs: concatMap f x }
+- error: { lhs: concat (f <$> x), rhs: concatMap f x }
+- error: { lhs: concat (x <&> f), rhs: concatMap f x }
+- error: { lhs: concat (fmap f x), rhs: concatMap f x }
+- error: { lhs: "concat [a, b]", rhs: a <> b }
+- error: { lhs: "sum [a, b]", rhs: a + b, name: "Use + directly" }
+- error: { lhs: map f (map g x), rhs: map (f . g) x, name: Use map once }
+- error:
+    {
+      lhs: concatMap f (map g x),
+      rhs: concatMap (f . g) x,
+      name: Fuse concatMap/map,
+    }
+- error: { lhs: x !! 0, rhs: head x }
+- error: { lhs: take n (repeat x), rhs: replicate n x }
+- error: { lhs: map f (replicate n x), rhs: replicate n (f x) }
+- error: { lhs: map f (repeat x), rhs: repeat (f x) }
+- error: { lhs: concatMap f (repeat x), rhs: cycle (f x) }
+- error: { lhs: concat (repeat x), rhs: cycle x }
+- error: { lhs: "cycle [x]", rhs: repeat x }
+- error: { lhs: head (reverse x), rhs: last x }
+- error: { lhs: last (reverse x), rhs: head x, note: IncreasesLaziness }
+- error: { lhs: head (drop n x), rhs: x !! n, side: isNat n }
+- error:
+    {
+      lhs: head (drop n x),
+      rhs: x !! max 0 n,
+      side: not (isNat n) && not (isNeg n),
+    }
+- error: { lhs: reverse (init x), rhs: tail (reverse x) }
+- error:
+    { lhs: reverse (tail (reverse x)), rhs: init x, note: IncreasesLaziness }
+- error:
+    {
+      lhs: reverse (reverse x),
+      rhs: x,
+      note: IncreasesLaziness,
+      name: Redundant reverse,
+    }
+- error: { lhs: isPrefixOf (reverse x) (reverse y), rhs: isSuffixOf x y }
+- error: { lhs: "foldr (<>) []", rhs: concat }
+- error: { lhs: foldr (<>) "", rhs: concat }
+- error: { lhs: "foldr ((<>) . f) []", rhs: concatMap f }
+- error: { lhs: foldr ((<>) . f) "", rhs: concatMap f }
+- error: { lhs: "foldl (<>) []", rhs: concat, note: IncreasesLaziness }
+- error: { lhs: foldl (<>) "", rhs: concat, note: IncreasesLaziness }
+- error: { lhs: foldl f (head x) (tail x), rhs: foldl1 f x }
+- error: { lhs: foldr f (last x) (init x), rhs: foldr1 f x }
+- error: { lhs: "foldr (\\c a -> x : a) []", rhs: "map (\\c -> x)" }
+- error: { lhs: foldr (.) id l z, rhs: foldr ($) z l }
+- error: { lhs: span (not . p), rhs: break p }
+- error: { lhs: break (not . p), rhs: span p }
+- error: { lhs: span (notElem x), rhs: break (elem x), name: Use break }
+- error: { lhs: break (notElem x), rhs: span (elem x), name: Use span }
+- error:
+    {
+      lhs: "(takeWhile p x, dropWhile p x)",
+      rhs: span p x,
+      note: DecreasesLaziness,
+    }
+- error: { lhs: fst (span p x), rhs: takeWhile p x }
+- error: { lhs: snd (span p x), rhs: dropWhile p x }
+- error: { lhs: fst (break p x), rhs: takeWhile (not . p) x }
+- error: { lhs: snd (break p x), rhs: dropWhile (not . p) x }
+- error:
+    { lhs: "(take n x, drop n x)", rhs: splitAt n x, note: DecreasesLaziness }
+- error: { lhs: fst (splitAt p x), rhs: take p x }
+- error: { lhs: snd (splitAt p x), rhs: drop p x }
+- error: { lhs: concatMap (<> "\n"), rhs: unlines }
+- error: { lhs: map id, rhs: id }
+- error: { lhs: concatMap id, rhs: concat }
+- error: { lhs: or (map p x), rhs: any p x }
+- error: { lhs: and (map p x), rhs: all p x }
+- error: { lhs: any f (map g x), rhs: any (f . g) x }
+- error: { lhs: all f (map g x), rhs: all (f . g) x }
+- error: { lhs: "zipWith (,)", rhs: zip }
+- error: { lhs: "zipWith3 (,,)", rhs: zip3 }
+- error: { lhs: map fst &&& map snd, rhs: unzip }
+- error: { lhs: length x == 0, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: 0 == length x, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: length x < 1, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: 1 > length x, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: length x <= 0, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: 0 >= length x, rhs: null x, note: IncreasesLaziness }
+- error: { lhs: "x == []", rhs: null x }
+- error: { lhs: "[] == x", rhs: null x }
+- error: { lhs: all (const False), rhs: "null" }
+- error: { lhs: any (const True) x, rhs: not (null x), name: Use null }
+- error:
+    {
+      lhs: length x /= 0,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error:
+    {
+      lhs: 0 /= length x,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error: { lhs: "\\x -> [x]", rhs: "(:[])", name: "Use :" }
+- error:
+    { lhs: map f (zip x y), rhs: zipWith (curry f) x y, side: not (isApp f) }
+- error: { lhs: "map f (fromMaybe [] x)", rhs: "maybe [] (map f) x" }
+- error:
+    { lhs: "concatMap f (fromMaybe [] x)", rhs: "maybe [] (concatMap f) x" }
+- error: { lhs: "concat (fromMaybe [] x)", rhs: "maybe [] concat x" }
+- error: { lhs: not (elem x y), rhs: notElem x y }
+- error: { lhs: not (notElem x y), rhs: elem x y }
+- error:
+    { lhs: foldr f z (map g x), rhs: foldr (f . g) z x, name: Fuse foldr/map }
+- error: { lhs: "x <> concatMap (' ':) y", rhs: "unwords (x:y)" }
+- error: { lhs: intercalate " ", rhs: unwords }
+- error:
+    { lhs: concat (intersperse x y), rhs: intercalate x y, side: notEq x " " }
+- error: { lhs: concat (intersperse " " x), rhs: unwords x }
+- error: { lhs: null (concat x), rhs: all null x }
+- error: { lhs: null (filter f x), rhs: not (any f x), name: Use any }
+- error: { lhs: "filter f x == []", rhs: not (any f x), name: Use any }
+- error: { lhs: "filter f x /= []", rhs: any f x }
+- error: { lhs: any id, rhs: or }
+- error: { lhs: all id, rhs: and }
+- error: { lhs: any (not . f) x, rhs: not (all f x), name: Hoist not }
+- error: { lhs: all (not . f) x, rhs: not (any f x), name: Hoist not }
+- error: { lhs: any ((==) a), rhs: elem a, note: ValidInstance Eq a }
+- error: { lhs: any (== a), rhs: elem a }
+- error: { lhs: any (a ==), rhs: elem a, note: ValidInstance Eq a }
+- error: { lhs: all ((/=) a), rhs: notElem a, note: ValidInstance Eq a }
+- error: { lhs: all (/= a), rhs: notElem a, note: ValidInstance Eq a }
+- error: { lhs: all (a /=), rhs: notElem a, note: ValidInstance Eq a }
+- error: { lhs: elem True, rhs: or }
+- error: { lhs: notElem False, rhs: and }
+- error: { lhs: True `elem` l, rhs: or l }
+- error: { lhs: False `notElem` l, rhs: and l }
+- error: { lhs: elem False, rhs: any not, name: Use any }
+- error: { lhs: notElem True, rhs: all not, name: Use all }
+- error: { lhs: False `elem` l, rhs: any not l, name: Use any }
+- error: { lhs: True `notElem` l, rhs: all not l, name: Use all }
+- error: { lhs: findIndex ((==) a), rhs: elemIndex a }
+- error: { lhs: findIndex (a ==), rhs: elemIndex a }
+- error: { lhs: findIndex (== a), rhs: elemIndex a }
+- error: { lhs: findIndices ((==) a), rhs: elemIndices a }
+- error: { lhs: findIndices (a ==), rhs: elemIndices a }
+- error: { lhs: findIndices (== a), rhs: elemIndices a }
+- error: { lhs: "lookup b (zip l [0..])", rhs: elemIndex b l }
+- error: { lhs: "elem x [y]", rhs: x == y, note: ValidInstance Eq a }
+- error: { lhs: "notElem x [y]", rhs: x /= y, note: ValidInstance Eq a }
+- error: { lhs: "length [1..n]", rhs: max 0 n }
+- error: { lhs: length x >= 0, rhs: "True", name: Length always non-negative }
+- error: { lhs: 0 <= length x, rhs: "True", name: Length always non-negative }
+- error:
+    {
+      lhs: length x > 0,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error:
+    {
+      lhs: 0 < length x,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error:
+    {
+      lhs: length x >= 1,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error:
+    {
+      lhs: 1 <= length x,
+      rhs: not (null x),
+      note: IncreasesLaziness,
+      name: Use null,
+    }
+- error:
+    {
+      lhs: take i x,
+      rhs: "[]",
+      side: isNegZero i,
+      name: Take on a non-positive,
+    }
+- error:
+    { lhs: drop i x, rhs: x, side: isNegZero i, name: Drop on a non-positive }
+- error: { lhs: last (scanl f z x), rhs: foldl f z x }
+- error: { lhs: head (scanr f z x), rhs: foldr f z x }
+- error:
+    {
+      lhs: "scanl (\\x _ -> a) b (replicate c d)",
+      rhs: "take c (iterate (\\x -> a) b)",
+    }
+- error:
+    { lhs: "foldl (\\x _ -> a) b [1..c]", rhs: "iterate (\\x -> a) b !! c" }
+- error: { lhs: iterate id, rhs: repeat }
+- error: { lhs: zipWith f (repeat x), rhs: map (f x) }
+- error:
+    {
+      lhs: zip (repeat x),
+      rhs: "map (_noParen_ x,)",
+      note: RequiresExtension TupleSections,
+      name: "Use map with tuple-section",
+    }
+- error: { lhs: zipWith f y (repeat z), rhs: map (`f` z) y }
+- error:
+    {
+      lhs: zip y (repeat z),
+      rhs: "map (,_noParen_ z) y",
+      note: RequiresExtension TupleSections,
+      name: "Use map with tuple-section",
+    }
+- error: { lhs: listToMaybe (filter p x), rhs: find p x }
+- error: { lhs: zip (take n x) (take n y), rhs: take n (zip x y) }
+- error:
+    {
+      lhs: zip (take n x) (take m y),
+      rhs: take (min n m) (zip x y),
+      side: notEq n m,
+      note: [IncreasesLaziness, DecreasesLaziness],
+      name: Redundant take,
+    }
+
+# MONOIDS
+
+- error: { lhs: mempty <> x, rhs: x, name: "Monoid law, left identity" }
+- error: { lhs: mempty `mappend` x, rhs: x, name: "Monoid law, left identity" }
+- error: { lhs: x <> mempty, rhs: x, name: "Monoid law, right identity" }
+- error: { lhs: x `mappend` mempty, rhs: x, name: "Monoid law, right identity" }
+- error: { lhs: foldr (<>) mempty, rhs: Data.Foldable.fold }
+- error: { lhs: foldr mappend mempty, rhs: Data.Foldable.fold }
+- error: { lhs: mempty x, rhs: mempty, name: Evaluate }
+- error:
+    {
+      lhs: x `mempty` y,
+      rhs: mempty,
+      name: Evaluate,
+      note: "Make sure you didn't mean to use mappend instead of mempty",
+    }
+
+# TRAVERSABLES
+
+- error: { lhs: traverse pure, rhs: pure, name: "Traversable law" }
+- error:
+    {
+      lhs: traverse (pure . f) x,
+      rhs: pure (fmap f x),
+      name: "Traversable law",
+    }
+- error: { lhs: sequenceA (map f x), rhs: traverse f x }
+- error: { lhs: sequenceA (f <$> x), rhs: traverse f x }
+- error: { lhs: sequenceA (x <&> f), rhs: traverse f x }
+- error: { lhs: sequenceA (fmap f x), rhs: traverse f x }
+- error: { lhs: sequenceA_ (map f x), rhs: traverse_ f x }
+- error: { lhs: sequenceA_ (f <$> x), rhs: traverse_ f x }
+- error: { lhs: sequenceA_ (x <&> f), rhs: traverse_ f x }
+- error: { lhs: sequenceA_ (fmap f x), rhs: traverse_ f x }
+- error: { lhs: foldMap id, rhs: fold }
+- error: { lhs: fold (f <$> x), rhs: foldMap f x }
+- error: { lhs: fold (x <&> f), rhs: foldMap f x }
+- error: { lhs: fold (fmap f x), rhs: foldMap f x }
+- error: { lhs: fold (map f x), rhs: foldMap f x }
+- error:
+    { lhs: foldMap f (g <$> x), rhs: foldMap (f . g) x, name: Fuse foldMap/<$> }
+- error:
+    { lhs: foldMap f (x <&> g), rhs: foldMap (f . g) x, name: Fuse foldMap/<&> }
+- error:
+    {
+      lhs: foldMap f (fmap g x),
+      rhs: foldMap (f . g) x,
+      name: Fuse foldMap/fmap,
+    }
+- error:
+    { lhs: foldMap f (map g x), rhs: foldMap (f . g) x, name: Fuse foldMap/map }
+- error:
+    {
+      lhs: traverse f (fmap g x),
+      rhs: traverse (f . g) x,
+      name: Fuse traverse/fmap,
+    }
+- error:
+    {
+      lhs: traverse f (g <$> x),
+      rhs: traverse (f . g) x,
+      name: Fuse traverse/<$>,
+    }
+- error:
+    {
+      lhs: traverse f (x <&> g),
+      rhs: traverse (f . g) x,
+      name: Fuse traverse/<&>,
+    }
+- error:
+    {
+      lhs: traverse_ f (fmap g x),
+      rhs: traverse_ (f . g) x,
+      name: Fuse traverse_/fmap,
+    }
+- error:
+    {
+      lhs: traverse_ f (g <$> x),
+      rhs: traverse_ (f . g) x,
+      name: Fuse traverse_/<$>,
+    }
+- error:
+    {
+      lhs: traverse_ f (x <&> g),
+      rhs: traverse_ (f . g) x,
+      name: Fuse traverse_/<&>,
+    }
+
+# BY
+
+- error: { lhs: deleteBy (==), rhs: delete }
+- error: { lhs: groupBy (==), rhs: group }
+- error: { lhs: insertBy compare, rhs: insert }
+- error: { lhs: intersectBy (==), rhs: intersect }
+- error: { lhs: maximumBy compare, rhs: maximum }
+- error: { lhs: minimumBy compare, rhs: minimum }
+- error: { lhs: nubBy (==), rhs: nub }
+- error: { lhs: sortBy compare, rhs: sort }
+- error: { lhs: unionBy (==), rhs: union }
+
+# FOLDS
+
+- error: { lhs: foldr  (>>) (pure ()), rhs: sequence_ }
+- error: { lhs: foldr  (>>) (return ()), rhs: sequence_ }
+- error: { lhs: foldr  (&&) True, rhs: and }
+- error: { lhs: foldl  (&&) True, rhs: and, note: IncreasesLaziness }
+- error: { lhs: foldr1 (&&), rhs: and, note: "RemovesError on `[]`" }
+- error: { lhs: foldl1 (&&), rhs: and, note: "RemovesError on `[]`" }
+- error: { lhs: foldr  (||) False, rhs: or }
+- error: { lhs: foldl  (||) False, rhs: or, note: IncreasesLaziness }
+- error: { lhs: foldr1 (||), rhs: or, note: "RemovesError on `[]`" }
+- error: { lhs: foldl1 (||), rhs: or, note: "RemovesError on `[]`" }
+- error: { lhs: foldl  (+) 0, rhs: sum }
+- error: { lhs: foldr  (+) 0, rhs: sum }
+- error: { lhs: foldl1 (+), rhs: sum, note: "RemovesError on `[]`" }
+- error: { lhs: foldr1 (+), rhs: sum, note: "RemovesError on `[]`" }
+- error: { lhs: foldl  (*) 1, rhs: product }
+- error: { lhs: foldr  (*) 1, rhs: product }
+- error: { lhs: foldl1 (*), rhs: product, note: "RemovesError on `[]`" }
+- error: { lhs: foldr1 (*), rhs: product, note: "RemovesError on `[]`" }
+- error: { lhs: foldl1 max, rhs: maximum }
+- error: { lhs: foldr1 max, rhs: maximum }
+- error: { lhs: foldl1 min, rhs: minimum }
+- error: { lhs: foldr1 min, rhs: minimum }
+- error: { lhs: foldr mplus mzero, rhs: msum }
+
+# FUNCTION
+
+- error: { lhs: \x -> x, rhs: id }
+- error: { lhs: \x y -> x, rhs: const }
+- error: { lhs: curry fst, rhs: const }
+- error: { lhs: curry snd, rhs: \_ x -> x, note: "Alternatively, use const id" }
+- error:
+    { lhs: flip const, rhs: \_ x -> x, note: "Alternatively, use const id" }
+- error: { lhs: "\\(x,y) -> y", rhs: snd }
+- error: { lhs: "\\(x,y) -> x", rhs: fst }
+- error: { lhs: "\\x y -> f (x,y)", rhs: curry f }
+- error: { lhs: "\\(x,y) -> f x y", rhs: uncurry f, note: IncreasesLaziness }
+- error: { lhs: f (fst p) (snd p), rhs: uncurry f p }
+- error: { lhs: "uncurry (\\x y -> z)", rhs: "\\(x,y) -> z" }
+- error: { lhs: "curry (\\(x,y) -> z)", rhs: "\\x y -> z" }
+- error: { lhs: uncurry (curry f), rhs: f, name: Redundant curry/uncurry }
+- error: { lhs: curry (uncurry f), rhs: f, name: Redundant curry/uncurry }
+- error: { lhs: "uncurry f (a, b)", rhs: f a b }
+- error: { lhs: ($) (f x), rhs: f x, name: Redundant $ }
+- error: { lhs: (f $), rhs: f, name: Redundant $ }
+- error: { lhs: (& f), rhs: f, name: Redundant & }
+- error:
+    { lhs: \x -> y, rhs: const y, side: isAtom y && not (isWildcard y) }
+    # If any isWildcard recursively then x may be used but not mentioned explicitly
+- error: { lhs: flip f x y, rhs: f y x, side: isApp original && isAtom y }
+- error: { lhs: id x, rhs: x }
+- error: { lhs: id . x, rhs: x, name: Redundant id }
+- error: { lhs: x . id, rhs: x, name: Redundant id }
+- error:
+    {
+      lhs: "((,) x)",
+      rhs: "(_noParen_ x,)",
+      name: Use tuple-section,
+      note: RequiresExtension TupleSections,
+    }
+- error:
+    {
+      lhs: "flip (,) x",
+      rhs: "(,_noParen_ x)",
+      name: Use tuple-section,
+      note: RequiresExtension TupleSections,
+    }
+- error: { lhs: flip (flip f), rhs: f, note: DecreasesLaziness }
+- error: { lhs: flip f <*> g, rhs: f =<< g, name: Redundant flip }
+- error: { lhs: g <**> flip f, rhs: g >>= f, name: Redundant flip }
+- error: { lhs: flip f =<< g, rhs: f <*> g, name: Redundant flip }
+- error:
+    {
+      lhs: g >>= flip f,
+      rhs: g Control.Applicative.<**> f,
+      name: Redundant flip,
+    }
+- error: { lhs: ($ x) . f, rhs: flip f x }
+
+# CHAR
+
+- error: { lhs: "a >= 'a' && a <= 'z'", rhs: isAsciiLower a }
+- error: { lhs: "'a' <= a && a <= 'z'", rhs: isAsciiLower a }
+- error: { lhs: "a >= 'A' && a <= 'Z'", rhs: isAsciiUpper a }
+- error: { lhs: "'A' <= a && a <= 'Z'", rhs: isAsciiUpper a }
+- error: { lhs: "a >= '0' && a <= '9'", rhs: isDigit a }
+- error: { lhs: "'0' <= a && a <= '9'", rhs: isDigit a }
+- error: { lhs: "a >= '0' && a <= '7'", rhs: isOctDigit a }
+- error: { lhs: "'0' <= a && a <= '7'", rhs: isOctDigit a }
+- error: { lhs: isLower a || isUpper a, rhs: isAlpha a }
+- error: { lhs: isUpper a || isLower a, rhs: isAlpha a }
+
+# BOOL
+
+- error: { lhs: x == True, rhs: x, name: Redundant == }
+- error: { lhs: x == False, rhs: not x, name: Redundant == }
+- error: { lhs: True == a, rhs: a, name: Redundant == }
+- error: { lhs: False == a, rhs: not a, name: Redundant == }
+- error: { lhs: (== True), rhs: id, name: Redundant == }
+- error: { lhs: (== False), rhs: not, name: Redundant == }
+- error: { lhs: (True ==), rhs: id, name: Redundant == }
+- error: { lhs: (False ==), rhs: not, name: Redundant == }
+- error: { lhs: a /= True, rhs: not a, name: Redundant /= }
+- error: { lhs: a /= False, rhs: a, name: Redundant /= }
+- error: { lhs: True /= a, rhs: not a, name: Redundant /= }
+- error: { lhs: False /= a, rhs: a, name: Redundant /= }
+- error: { lhs: (/= True), rhs: not, name: Redundant /= }
+- error: { lhs: (/= False), rhs: id, name: Redundant /= }
+- error: { lhs: (True /=), rhs: not, name: Redundant /= }
+- error: { lhs: (False /=), rhs: id, name: Redundant /= }
+- error:
+    {
+      lhs: if a then x else x,
+      rhs: x,
+      note: IncreasesLaziness,
+      name: Redundant if,
+    }
+- error: { lhs: if a then True else False, rhs: a, name: Redundant if }
+- error: { lhs: if a then False else True, rhs: not a, name: Redundant if }
+- error:
+    {
+      lhs: if a then t else (if b then t else f),
+      rhs: if a || b then t else f,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: if a then (if b then t else f) else f,
+      rhs: if a && b then t else f,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: if x then True else y,
+      rhs: x || y,
+      side: notEq y False,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: if x then y else False,
+      rhs: x && y,
+      side: notEq y True,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: if | b -> t | otherwise -> f,
+      rhs: if b then t else f,
+      name: Redundant multi-way if,
+    }
+- error:
+    {
+      lhs: "case a of {True -> t; False -> f}",
+      rhs: if a then t else f,
+      name: Use if,
+    }
+- error:
+    {
+      lhs: "case a of {False -> f; True -> t}",
+      rhs: if a then t else f,
+      name: Use if,
+    }
+- error:
+    {
+      lhs: "case a of {True -> t; _ -> f}",
+      rhs: if a then t else f,
+      name: Use if,
+    }
+- error:
+    {
+      lhs: "case a of {False -> f; _ -> t}",
+      rhs: if a then t else f,
+      name: Use if,
+    }
+- error:
+    {
+      lhs: "if c then (True, x) else (False, x)",
+      rhs: "(c, x)",
+      note: IncreasesLaziness,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: "if c then (False, x) else (True, x)",
+      rhs: "(not c, x)",
+      note: IncreasesLaziness,
+      name: Redundant if,
+    }
+- error: { lhs: "or [x, y]", rhs: x || y }
+- error: { lhs: "or [x, y, z]", rhs: x || y || z }
+- error: { lhs: "and [x, y]", rhs: x && y }
+- error: { lhs: "and [x, y, z]", rhs: x && y && z }
+- error:
+    {
+      lhs: if x then False else y,
+      rhs: not x && y,
+      side: notEq y True,
+      name: Redundant if,
+    }
+- error:
+    {
+      lhs: if x then y else True,
+      rhs: not x || y,
+      side: notEq y False,
+      name: Redundant if,
+    }
+- error: { lhs: not (not x), rhs: x, name: Redundant not }
+
+# ARROW
+
+- error: { lhs: id *** g, rhs: second g }
+- error: { lhs: f *** id, rhs: first f }
+- ignore: { lhs: zip (map f x) (map g x), rhs: map (f Control.Arrow.&&& g) x }
+- ignore: { lhs: "\\x -> (f x, g x)", rhs: f Control.Arrow.&&& g }
+- error:
+    {
+      lhs: "(fst x, snd x)",
+      rhs: x,
+      note: DecreasesLaziness,
+      name: Redundant pair,
+    }
+
+# BIFUNCTOR
+
+- error: { lhs: bimap id g, rhs: second g }
+- error: { lhs: bimap f id, rhs: first f }
+- error: { lhs: first id, rhs: id }
+- error: { lhs: second id, rhs: id }
+- error: { lhs: bimap id id, rhs: id }
+- error: { lhs: first f (second g x), rhs: bimap f g x }
+- error: { lhs: second g (first f x), rhs: bimap f g x }
+- error: { lhs: first f (first g x), rhs: first (f . g) x }
+- error: { lhs: second f (second g x), rhs: second (f . g) x }
+- error: { lhs: bimap f h (bimap g i x), rhs: bimap (f . g) (h . i) x }
+- error: { lhs: first f (bimap g h x), rhs: bimap (f . g) h x }
+- error: { lhs: second g (bimap f h x), rhs: bimap f (g . h) x }
+- error: { lhs: bimap f h (first g x), rhs: bimap (f . g) h x }
+- error: { lhs: bimap f g (second h x), rhs: bimap f (g . h) x }
+- error:
+    {
+      lhs: "\\(x,y) -> (f x, g y)",
+      rhs: Data.Bifunctor.bimap f g,
+      note: IncreasesLaziness,
+    }
+- error:
+    {
+      lhs: "\\(x,y) -> (f x,y)",
+      rhs: Data.Bifunctor.first f,
+      note: IncreasesLaziness,
+    }
+- error:
+    {
+      lhs: "\\(x,y) -> (x,f y)",
+      rhs: Data.Bifunctor.second f,
+      note: IncreasesLaziness,
+    }
+- error: { lhs: "(f (fst x), g (snd x))", rhs: Data.Bifunctor.bimap f g x }
+- error: { lhs: "(f (fst x), snd x)", rhs: Data.Bifunctor.first f x }
+- error: { lhs: "(fst x, g (snd x))", rhs: Data.Bifunctor.second g x }
+
+# FUNCTOR
+
+- error: { lhs: fmap f (fmap g x), rhs: fmap (f . g) x, name: Functor law }
+- ignore: { lhs: f <$> (g <$> x), rhs: f . g <$> x, name: Functor law }
+- ignore: { lhs: x <&> g <&> f, rhs: x <&> f . g, name: Functor law }
+- error: { lhs: fmap id, rhs: id, name: Functor law }
+- error: { lhs: id <$> x, rhs: x, name: Functor law }
+- error: { lhs: x <&> id, rhs: x, name: Functor law }
+- error: { lhs: f <$> g <$> x, rhs: f . g <$> x }
+- error: { lhs: fmap f $ x, rhs: f <$> x, side: isApp x || isAtom x }
+- error: { lhs: \x -> a <$> b x, rhs: fmap a . b }
+- error: { lhs: \x -> b x <&> a, rhs: fmap a . b }
+- error: { lhs: x *> pure y, rhs: x Data.Functor.$> y }
+- error: { lhs: x *> return y, rhs: x Data.Functor.$> y }
+- error: { lhs: pure x <* y, rhs: x Data.Functor.<$ y }
+- error: { lhs: return x <* y, rhs: x Data.Functor.<$ y }
+- error: { lhs: const x <$> y, rhs: x <$ y }
+- error: { lhs: pure x <$> y, rhs: x <$ y }
+- error: { lhs: return x <$> y, rhs: x <$ y }
+- error: { lhs: x <&> const y, rhs: x Data.Functor.$> y }
+- error: { lhs: x <&> pure y, rhs: x Data.Functor.$> y }
+- error: { lhs: x <&> return y, rhs: x Data.Functor.$> y }
+- error: { lhs: "fmap f (x,b)", rhs: "(x,f b)", name: Using fmap on tuple }
+- error: { lhs: "f <$> (x,b)", rhs: "(x,f b)", name: Using <$> on tuple }
+- error: { lhs: "(x,b) <&> f", rhs: "(x,f b)", name: Using <&> on tuple }
+- error: { lhs: "fmap f (x,y,b)", rhs: "(x,y,f b)", name: Using fmap on tuple }
+- error: { lhs: "f <$> (x,y,b)", rhs: "(x,y,f b)", name: Using <$> on tuple }
+- error: { lhs: "(x,y,b) <&> f", rhs: "(x,y,f b)", name: Using <&> on tuple }
+
+# APPLICATIVE
+
+- error: { lhs: pure x <*> y, rhs: x <$> y }
+- error: { lhs: return x <*> y, rhs: x <$> y }
+- error: { lhs: x <* pure y, rhs: x }
+- error: { lhs: x <* return y, rhs: x }
+- error: { lhs: pure x *> y, rhs: "y", name: Redundant *> }
+- error: { lhs: return x *> y, rhs: "y", name: Redundant *> }
+- error: { lhs: "x <*> Nothing", rhs: "Nothing" }
+- error: { lhs: "x <*> First Nothing", rhs: "First Nothing" }
+- error: { lhs: "x <*> Last Nothing", rhs: "Last Nothing" }
+- error: { lhs: "x <*> Left a", rhs: "Left a" }
+- error: { lhs: "x <*> Ap []", rhs: "Ap []" }
+- error: { lhs: "x <*> []", rhs: "[]" }
+
+# MONAD
+
+- error: { lhs: pure a >>= f, rhs: f a, name: "Monad law, left identity" }
+- error: { lhs: return a >>= f, rhs: f a, name: "Monad law, left identity" }
+- error: { lhs: f =<< pure a, rhs: f a, name: "Monad law, left identity" }
+- error: { lhs: f =<< return a, rhs: f a, name: "Monad law, left identity" }
+- error: { lhs: m >>= pure, rhs: m, name: "Monad law, right identity" }
+- error: { lhs: m >>= return, rhs: m, name: "Monad law, right identity" }
+- error: { lhs: pure =<< m, rhs: m, name: "Monad law, right identity" }
+- error: { lhs: return =<< m, rhs: m, name: "Monad law, right identity" }
+- error: { lhs: liftM, rhs: fmap }
+- error: { lhs: liftA, rhs: fmap }
+- error: { lhs: m >>= pure . f, rhs: m Data.Functor.<&> f }
+- error: { lhs: m >>= return . f, rhs: m Data.Functor.<&> f }
+- error: { lhs: pure . f =<< m, rhs: f <$> m }
+- error: { lhs: return . f =<< m, rhs: f <$> m }
+- error: { lhs: fmap f x >>= g, rhs: x >>= g . f }
+- error: { lhs: f <$> x >>= g, rhs: x >>= g . f }
+- error: { lhs: x Data.Functor.<&> f >>= g, rhs: x >>= g . f }
+- error: { lhs: g =<< fmap f x, rhs: g . f =<< x }
+- error: { lhs: g =<< f <$> x, rhs: g . f =<< x }
+- error: { lhs: g =<< (x Data.Functor.<&> f), rhs: g . f =<< x }
+- error:
+    {
+      lhs: if x then y else pure (),
+      rhs: Control.Monad.when x $ _noParen_ y,
+      side: not (isAtom y),
+    }
+- error:
+    {
+      lhs: if x then y else return (),
+      rhs: Control.Monad.when x $ _noParen_ y,
+      side: not (isAtom y),
+    }
+- error:
+    {
+      lhs: if x then y else pure (),
+      rhs: Control.Monad.when x y,
+      side: isAtom y,
+    }
+- error:
+    {
+      lhs: if x then y else return (),
+      rhs: Control.Monad.when x y,
+      side: isAtom y,
+    }
+- error:
+    {
+      lhs: if x then pure () else y,
+      rhs: Control.Monad.unless x $ _noParen_ y,
+      side: not (isAtom y),
+    }
+- error:
+    {
+      lhs: if x then return () else y,
+      rhs: Control.Monad.unless x $ _noParen_ y,
+      side: not (isAtom y),
+    }
+- error:
+    {
+      lhs: if x then pure () else y,
+      rhs: Control.Monad.unless x y,
+      side: isAtom y,
+    }
+- error:
+    {
+      lhs: if x then return () else y,
+      rhs: Control.Monad.unless x y,
+      side: isAtom y,
+    }
+- error: { lhs: sequence (map f x), rhs: mapM f x }
+- error: { lhs: sequence_ (map f x), rhs: mapM_ f x }
+- error: { lhs: sequence (f <$> x), rhs: mapM f x }
+- error: { lhs: sequence (x <&> f), rhs: mapM f x }
+- error: { lhs: sequence (fmap f x), rhs: mapM f x }
+- error: { lhs: sequence_ (f <$> x), rhs: mapM_ f x }
+- error: { lhs: sequence_ (x <&> f), rhs: mapM_ f x }
+- error: { lhs: sequence_ (fmap f x), rhs: mapM_ f x }
+- error: { lhs: flip mapM, rhs: Control.Monad.forM }
+- error: { lhs: flip mapM_, rhs: Control.Monad.forM_ }
+- error: { lhs: flip forM, rhs: mapM }
+- error: { lhs: flip forM_, rhs: mapM_ }
+- error: { lhs: when (not x), rhs: unless x }
+- error: { lhs: when (notElem x y), rhs: unless (elem x y), name: Use unless }
+- error: { lhs: unless (not x), rhs: when x }
+- error: { lhs: unless (notElem x y), rhs: when (elem x y), name: Use when }
+- error: { lhs: x >>= id, rhs: Control.Monad.join x }
+- error: { lhs: id =<< x, rhs: Control.Monad.join x }
+- error: { lhs: join (f <$> x), rhs: f =<< x }
+- error: { lhs: join (x <&> f), rhs: f =<< x }
+- error: { lhs: join (fmap f x), rhs: f =<< x }
+- error:
+    { lhs: a >> pure (), rhs: Control.Monad.void a, side: isAtom a || isApp a }
+- error:
+    {
+      lhs: a >> return (),
+      rhs: Control.Monad.void a,
+      side: isAtom a || isApp a,
+    }
+- error: { lhs: fmap (const ()), rhs: Control.Monad.void }
+- error: { lhs: const () <$> x, rhs: Control.Monad.void x }
+- error: { lhs: x <&> const (), rhs: Control.Monad.void x }
+- error: { lhs: () <$ x, rhs: Control.Monad.void x }
+- error: { lhs: flip (>=>), rhs: (<=<) }
+- error: { lhs: flip (<=<), rhs: (>=>) }
+- error: { lhs: flip (>>=), rhs: (=<<) }
+- error: { lhs: flip (=<<), rhs: (>>=) }
+- error: { lhs: \x -> f x >>= g, rhs: f Control.Monad.>=> g }
+- error: { lhs: \x -> f =<< g x, rhs: f Control.Monad.<=< g }
+- error: { lhs: (>>= f) . g, rhs: f Control.Monad.<=< g }
+- error: { lhs: (f =<<) . g, rhs: f Control.Monad.<=< g }
+- error: { lhs: a >> forever a, rhs: forever a }
+- error: { lhs: liftM2 id, rhs: ap }
+- error: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
+- error: { lhs: liftA2 f (return x), rhs: fmap (f x) }
+- error: { lhs: liftM2 f (pure x), rhs: fmap (f x) }
+- error: { lhs: liftM2 f (return x), rhs: fmap (f x) }
+- error: { lhs: fmap f (pure x), rhs: pure (f x) }
+- error: { lhs: fmap f (return x), rhs: return (f x) }
+- error: { lhs: f <$> pure x, rhs: pure (f x) }
+- error: { lhs: pure x <&> f, rhs: pure (f x) }
+- error: { lhs: f <$> return x, rhs: return (f x) }
+- error: { lhs: return x <&> f, rhs: return (f x) }
+- error: { lhs: mapM (uncurry f) (zip l m), rhs: zipWithM f l m }
+- error: { lhs: mapM_ (void . f), rhs: mapM_ f }
+- error: { lhs: forM_ x (void . f), rhs: forM_ x f }
+- error: { lhs: a >>= \_ -> b, rhs: a >> b }
+- error: { lhs: m <* pure x, rhs: m }
+- error: { lhs: m <* return x, rhs: m }
+- error: { lhs: pure x *> m, rhs: m, name: Redundant *> }
+- error: { lhs: return x *> m, rhs: m, name: Redundant *> }
+- error: { lhs: pure x >> m, rhs: m, name: Redundant >> }
+- error: { lhs: return x >> m, rhs: m, name: Redundant >> }
+- error: { lhs: "forM [1..n] (const f)", rhs: replicateM n f }
+- error: { lhs: "for [1..n] (const f)", rhs: replicateM n f }
+- error: { lhs: "forM [1..n] (\\_ -> x)", rhs: replicateM n x }
+- error: { lhs: "for [1..n] (\\_ -> x)", rhs: replicateM n x }
+
+# STATE MONAD
+
+- error: { lhs: fst (runState x y), rhs: evalState x y }
+- error: { lhs: snd (runState x y), rhs: execState x y }
+
+# MONAD LIST
+
+- error: { lhs: unzip <$> mapM f x, rhs: Control.Monad.mapAndUnzipM f x }
+- error: { lhs: mapM f x <&> unzip, rhs: Control.Monad.mapAndUnzipM f x }
+- error: { lhs: fmap unzip (mapM f x), rhs: Control.Monad.mapAndUnzipM f x }
+- error: { lhs: sequence (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
+- error: { lhs: sequence_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
+- error: { lhs: sequence (replicate n x), rhs: Control.Monad.replicateM n x }
+- error: { lhs: sequence_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
+- error: { lhs: sequenceA (zipWith f x y), rhs: Control.Monad.zipWithM f x y }
+- error: { lhs: sequenceA_ (zipWith f x y), rhs: Control.Monad.zipWithM_ f x y }
+- error: { lhs: sequenceA (replicate n x), rhs: Control.Monad.replicateM n x }
+- error: { lhs: sequenceA_ (replicate n x), rhs: Control.Monad.replicateM_ n x }
+- error: { lhs: mapM f (replicate n x), rhs: Control.Monad.replicateM n (f x) }
+- error:
+    { lhs: mapM_ f (replicate n x), rhs: Control.Monad.replicateM_ n (f x) }
+- error: { lhs: mapM f (map g x), rhs: mapM (f . g) x, name: Fuse mapM/map }
+- error: { lhs: mapM_ f (map g x), rhs: mapM_ (f . g) x, name: Fuse mapM_/map }
+- error:
+    {
+      lhs: traverse f (map g x),
+      rhs: traverse (f . g) x,
+      name: Fuse traverse/map,
+    }
+- error:
+    {
+      lhs: traverse_ f (map g x),
+      rhs: traverse_ (f . g) x,
+      name: Fuse traverse_/map,
+    }
+- error: { lhs: mapM id, rhs: sequence }
+- error: { lhs: mapM_ id, rhs: sequence_ }
+
+# APPLICATIVE / TRAVERSABLE
+
+- error: { lhs: flip traverse, rhs: for }
+- error: { lhs: flip for, rhs: traverse }
+- error: { lhs: flip traverse_, rhs: for_ }
+- error: { lhs: flip for_, rhs: traverse_ }
+- error: { lhs: foldr (*>) (pure ()), rhs: sequenceA_ }
+- error: { lhs: foldr (*>) (return ()), rhs: sequence_ }
+- error: { lhs: foldr (<|>) empty, rhs: asum }
+- error: { lhs: liftA2 (flip ($)), rhs: (<**>) }
+- error: { lhs: liftA2 f (pure x), rhs: fmap (f x) }
+- error: { lhs: liftA2 f (return x), rhs: fmap (f x) }
+- error: { lhs: Just <$> a <|> pure Nothing, rhs: optional a }
+- error: { lhs: Just <$> a <|> return Nothing, rhs: optional a }
+- error: { lhs: empty <|> x, rhs: x, name: "Alternative law, left identity" }
+- error: { lhs: x <|> empty, rhs: x, name: "Alternative law, right identity" }
+- error: { lhs: traverse id, rhs: sequenceA }
+- error: { lhs: traverse_ id, rhs: sequenceA_ }
+
+# LIST COMP
+
+- error:
+    {
+      lhs: "if b then [x] else []",
+      rhs: "[x | b]",
+      name: Use list comprehension,
+    }
+- error:
+    {
+      lhs: "if b then [] else [x]",
+      rhs: "[x | not b]",
+      name: Use list comprehension,
+    }
+- error:
+    {
+      lhs: "[x | x <- y]",
+      rhs: "y",
+      side: isVar x,
+      name: Redundant list comprehension,
+    }
+- error:
+    {
+      lhs: "[ f x | x <- [y] ]",
+      rhs: "[f y]",
+      side: isVar x,
+      name: Redundant list comprehension,
+    }
+
+# SEQ
+
+- error: { lhs: seq x x, rhs: x, name: Redundant seq }
+- error: { lhs: join seq, rhs: id, name: Redundant seq }
+- error: { lhs: id $! x, rhs: x, name: Redundant $! }
+- error: { lhs: seq x y, rhs: "y", side: isWHNF x, name: Redundant seq }
+- error: { lhs: f $! x, rhs: f x, side: isWHNF x, name: Redundant $! }
+- error:
+    { lhs: evaluate x, rhs: return x, side: isWHNF x, name: Redundant evaluate }
+- error: { lhs: seq (rnf x) (), rhs: rnf x, name: Redundant seq }
+
+# TUPLE
+
+- error: { lhs: fst (unzip x), rhs: map fst x }
+- error: { lhs: snd (unzip x), rhs: map snd x }
+- error: { lhs: "\\x y -> (x, y)", rhs: "(,)" }
+- error: { lhs: "\\x y z -> (x, y, z)", rhs: "(,,)" }
+- error: { lhs: "(,b) a", rhs: "(a,b)", side: isAtom a, name: Evaluate }
+- error: { lhs: "(a,) b", rhs: "(a,b)", side: isAtom b, name: Evaluate }
+- error:
+    {
+      lhs: "Data.List.NonEmpty.unzip",
+      rhs: "Data.Functor.unzip",
+      name: "Avoid NonEmpty.unzip",
+      note: "The function is being deprecated",
+    }
+
+# MAYBE
+
+- error: { lhs: maybe x id, rhs: Data.Maybe.fromMaybe x }
+- error: { lhs: maybe Nothing Just, rhs: id, name: Redundant maybe }
+- error: { lhs: maybe False (const True), rhs: Data.Maybe.isJust }
+- error: { lhs: maybe True (const False), rhs: Data.Maybe.isNothing }
+- error: { lhs: maybe False (x ==), rhs: (Just x ==), name: Redundant maybe }
+- error: { lhs: maybe True (x /=), rhs: (Just x /=), name: Redundant maybe }
+- error:
+    {
+      lhs: maybe False (== x),
+      rhs: (Just x ==),
+      note: ValidInstance Eq x,
+      name: Redundant maybe,
+    }
+- error:
+    {
+      lhs: maybe True (/= x),
+      rhs: (Just x /=),
+      note: ValidInstance Eq x,
+      name: Redundant maybe,
+    }
+# The following two hints seem to be somewhat unwelcome, e.g.
+# https://github.com/ndmitchell/hlint/issues/1177
+- ignore: {
+      lhs: fromMaybe False x,
+      rhs: Just True == x,
+      name: Redundant fromMaybe,
+    } # Eta expanded, see https://github.com/ndmitchell/hlint/issues/970#issuecomment-643645053
+- ignore:
+    { lhs: fromMaybe True x, rhs: Just False /= x, name: Redundant fromMaybe }
+- error: { lhs: not (isNothing x), rhs: isJust x }
+- error: { lhs: not (isJust x), rhs: isNothing x }
+- error: { lhs: "maybe [] (:[])", rhs: maybeToList }
+- error: { lhs: catMaybes (map f x), rhs: mapMaybe f x }
+- error: { lhs: catMaybes (f <$> x), rhs: mapMaybe f x }
+- error: { lhs: catMaybes (x <&> f), rhs: mapMaybe f x }
+- error: { lhs: catMaybes (fmap f x), rhs: mapMaybe f x }
+- error:
+    {
+      lhs: case x of Nothing -> y; Just a -> a,
+      rhs: Data.Maybe.fromMaybe y x,
+      side: isAtom y,
+      name: Replace case with fromMaybe,
+    }
+- error:
+    {
+      lhs: case x of Just a -> a; Nothing -> y,
+      rhs: Data.Maybe.fromMaybe y x,
+      side: isAtom y,
+      name: Replace case with fromMaybe,
+    }
+- error:
+    {
+      lhs: case x of Nothing -> y; Just a -> f a,
+      rhs: maybe y f x,
+      side: isAtom y && isAtom f,
+      name: Replace case with maybe,
+    }
+- error:
+    {
+      lhs: case x of Just a -> f a; Nothing -> y,
+      rhs: maybe y f x,
+      side: isAtom y && isAtom f,
+      name: Replace case with maybe,
+    }
+- error: { lhs: if isNothing x then y else f (fromJust x), rhs: maybe y f x }
+- error: { lhs: if isJust x then f (fromJust x) else y, rhs: maybe y f x }
+- error: { lhs: maybe Nothing (Just . f), rhs: fmap f }
+- error: { lhs: map fromJust (filter isJust x), rhs: Data.Maybe.catMaybes x }
+- error:
+    {
+      lhs: filter isJust (map f x),
+      rhs: map Just (mapMaybe f x),
+      name: Use mapMaybe,
+    }
+- error:
+    {
+      lhs: filter isJust (f <*> x),
+      rhs: map Just (mapMaybe f x),
+      name: Use mapMaybe,
+    }
+- error:
+    {
+      lhs: filter isJust (x <&> f),
+      rhs: map Just (mapMaybe f x),
+      name: Use mapMaybe,
+    }
+- error:
+    {
+      lhs: filter isJust (fmap f x),
+      rhs: map Just (mapMaybe f x),
+      name: Use mapMaybe,
+    }
+- error: { lhs: x == Nothing, rhs: isNothing x }
+- error: { lhs: Nothing == x, rhs: isNothing x }
+- error: { lhs: x /= Nothing, rhs: Data.Maybe.isJust x }
+- error: { lhs: Nothing /= x, rhs: Data.Maybe.isJust x }
+- error: { lhs: concatMap (maybeToList . f), rhs: Data.Maybe.mapMaybe f }
+- error: { lhs: concatMap maybeToList, rhs: catMaybes }
+- error: { lhs: maybe n Just x, rhs: x Control.Applicative.<|> n }
+- error: { lhs: if isNothing x then y else fromJust x, rhs: fromMaybe y x }
+- error: { lhs: if isJust x then fromJust x else y, rhs: fromMaybe y x }
+- error: { lhs: isJust x && (fromJust x == y), rhs: x == Just y }
+- error: { lhs: isJust y && (x == fromJust y), rhs: Just x == y }
+- error:
+    {
+      lhs: mapMaybe f (map g x),
+      rhs: mapMaybe (f . g) x,
+      name: Fuse mapMaybe/map,
+    }
+- error: { lhs: fromMaybe a (fmap f x), rhs: maybe a f x }
+- error: { lhs: fromMaybe a (f <$> x), rhs: maybe a f x }
+- error: { lhs: fromMaybe a (x <&> f), rhs: maybe a f x }
+- error: { lhs: mapMaybe id, rhs: catMaybes }
+- error:
+    { lhs: "[x | Just x <- a]", rhs: Data.Maybe.catMaybes a, side: isVar x }
+- error:
+    {
+      lhs: case m of Nothing -> Nothing; Just x -> x,
+      rhs: Control.Monad.join m,
+    }
+- error: { lhs: maybe Nothing id, rhs: join }
+- error: { lhs: maybe Nothing f x, rhs: f =<< x }
+- error:
+    { lhs: maybe x f (g <$> y), rhs: maybe x (f . g) y, name: Redundant <$> }
+- error:
+    { lhs: maybe x f (y <&> g), rhs: maybe x (f . g) y, name: Redundant <&> }
+- error:
+    { lhs: maybe x f (fmap g y), rhs: maybe x (f . g) y, name: Redundant fmap }
+- error: { lhs: isJust (f <$> x), rhs: isJust x }
+- error: { lhs: isJust (x <&> f), rhs: isJust x }
+- error: { lhs: isJust (fmap f x), rhs: isJust x }
+- error: { lhs: isNothing (f <$> x), rhs: isNothing x }
+- error: { lhs: isNothing (x <&> f), rhs: isNothing x }
+- error: { lhs: isNothing (fmap f x), rhs: isNothing x }
+- error:
+    { lhs: fromJust (f <$> x), rhs: f (fromJust x), note: IncreasesLaziness }
+- error:
+    { lhs: fromJust (x <&> f), rhs: f (fromJust x), note: IncreasesLaziness }
+- error:
+    { lhs: fromJust (fmap f x), rhs: f (fromJust x), note: IncreasesLaziness }
+- error:
+    { lhs: mapMaybe f (g <$> x), rhs: mapMaybe (f . g) x, name: Redundant <$> }
+- error:
+    { lhs: mapMaybe f (x <&> g), rhs: mapMaybe (f . g) x, name: Redundant <&> }
+- error:
+    {
+      lhs: mapMaybe f (fmap g x),
+      rhs: mapMaybe (f . g) x,
+      name: Redundant fmap,
+    }
+- error: { lhs: catMaybes (nub x), rhs: nub (catMaybes x), name: Move nub out }
+- error: { lhs: lefts (nub x), rhs: nub (lefts x), name: Move nub out }
+- error: { lhs: rights (nub x), rhs: nub (rights x), name: Move nub out }
+- error:
+    {
+      lhs: catMaybes (reverse x),
+      rhs: reverse (catMaybes x),
+      name: Move reverse out,
+    }
+- error:
+    { lhs: lefts (reverse x), rhs: reverse (lefts x), name: Move reverse out }
+- error:
+    { lhs: rights (reverse x), rhs: reverse (rights x), name: Move reverse out }
+- error:
+    { lhs: catMaybes (sort x), rhs: sort (catMaybes x), name: Move sort out }
+- error: { lhs: lefts (sort x), rhs: sort (lefts x), name: Move sort out }
+- error: { lhs: rights (sort x), rhs: sort (rights x), name: Move sort out }
+- error:
+    {
+      lhs: catMaybes (nubOrd x),
+      rhs: nubOrd (catMaybes x),
+      name: Move nubOrd out,
+    }
+- error: { lhs: lefts (nubOrd x), rhs: nubOrd (lefts x), name: Move nubOrd out }
+- error:
+    { lhs: rights (nubOrd x), rhs: nubOrd (rights x), name: Move nubOrd out }
+- error:
+    {
+      lhs: filter f (reverse x),
+      rhs: reverse (filter f x),
+      name: Move reverse out,
+    }
+- error:
+    {
+      lhs: mapMaybe f (reverse x),
+      rhs: reverse (mapMaybe f x),
+      name: Move reverse out,
+    }
+
+# EITHER
+
+- error: { lhs: "[a | Left a <- b]", rhs: lefts b, side: isVar a }
+- error: { lhs: "[a | Right a <- b]", rhs: rights b, side: isVar a }
+- error: { lhs: either Left (Right . f), rhs: fmap f }
+- error:
+    {
+      lhs: either f g (fmap h x),
+      rhs: either f (g . h) x,
+      name: Redundant fmap,
+    }
+- error:
+    { lhs: either f g (h <$> x), rhs: either f (g . h) x, name: Redundant <$> }
+- error:
+    { lhs: either f g (x <&> h), rhs: either f (g . h) x, name: Redundant <&> }
+- error: { lhs: isLeft (fmap f x), rhs: isLeft x }
+- error: { lhs: isLeft (f <$> x), rhs: isLeft x }
+- error: { lhs: isLeft (x <&> f), rhs: isLeft x }
+- error: { lhs: isRight (fmap f x), rhs: isRight x }
+- error: { lhs: isRight (f <$> x), rhs: isRight x }
+- error: { lhs: isRight (x <&> f), rhs: isRight x }
+- error: { lhs: fromLeft x (fmap f y), rhs: fromLeft x y }
+- error: { lhs: fromLeft x (f <$> y), rhs: fromLeft x y }
+- error: { lhs: fromLeft x (y <&> f), rhs: fromLeft x y }
+- error: { lhs: fromRight x (fmap f y), rhs: either (const x) f y }
+- error: { lhs: fromRight x (f <$> y), rhs: either (const x) f y }
+- error: { lhs: fromRight x (y <&> f), rhs: either (const x) f y }
+- error: { lhs: either (const x) id, rhs: fromRight x }
+- error: { lhs: either id (const x), rhs: fromLeft x }
+- error: { lhs: either Left f x, rhs: f =<< x }
+
+# INFIX
+
+- error:
+    {
+      lhs: elem x y,
+      rhs: x `elem` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: notElem x y,
+      rhs: x `notElem` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: isInfixOf x y,
+      rhs: x `isInfixOf` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: isSuffixOf x y,
+      rhs: x `isSuffixOf` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: isPrefixOf x y,
+      rhs: x `isPrefixOf` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: union x y,
+      rhs: x `union` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+- error:
+    {
+      lhs: intersect x y,
+      rhs: x `intersect` y,
+      side: not (isInfixApp original) && not (isParen result),
+      name: Use infix,
+    }
+
+# MATHS
+
+- error:
+    {
+      lhs: fromIntegral x,
+      rhs: x,
+      side: isLitInt x,
+      name: Redundant fromIntegral,
+    }
+- error:
+    {
+      lhs: fromInteger x,
+      rhs: x,
+      side: isLitInt x,
+      name: Redundant fromInteger,
+    }
+- error: { lhs: x + negate y, rhs: x - y }
+- error: { lhs: 0 - x, rhs: negate x }
+- error: { lhs: negate (negate x), rhs: x, name: Redundant negate }
+- error: { lhs: log y / log x, rhs: logBase x y }
+- error: { lhs: sin x / cos x, rhs: tan x }
+- error: { lhs: rem n 2 == 0, rhs: even n }
+- error: { lhs: 0 == rem n 2, rhs: even n }
+- error: { lhs: rem n 2 /= 0, rhs: odd n }
+- error: { lhs: 0 /= rem n 2, rhs: odd n }
+- error: { lhs: mod n 2 == 0, rhs: even n }
+- error: { lhs: 0 == mod n 2, rhs: even n }
+- error: { lhs: mod n 2 /= 0, rhs: odd n }
+- error: { lhs: 0 /= mod n 2, rhs: odd n }
+- error: { lhs: not (even x), rhs: odd x }
+- error: { lhs: not (odd x), rhs: even x }
+- error: { lhs: x ** 0.5, rhs: sqrt x }
+- error: { lhs: x ^ 0, rhs: "1", name: Use 1 }
+- error: { lhs: round (x - 0.5), rhs: floor x }
+
+# CONCURRENT
+
+- error: { lhs: mapM_ (writeChan a), rhs: writeList2Chan a }
+- error: { lhs: atomically (readTVar x), rhs: readTVarIO x }
+- error: { lhs: atomically (newTVar x), rhs: newTVarIO x }
+- error: { lhs: atomically (newTMVar x), rhs: newTMVarIO x }
+- error: { lhs: atomically newEmptyTMVar, rhs: newEmptyTMVarIO }
+
+# TYPEABLE
+
+- error: { lhs: "typeOf (a :: b)", rhs: "typeRep (Proxy :: Proxy b)" }
+
+# EXCEPTION
+
+- error: { lhs: flip Control.Exception.catch, rhs: handle }
+- error: { lhs: flip handle, rhs: Control.Exception.catch }
+- error: { lhs: flip (catchJust p), rhs: handleJust p }
+- error: { lhs: flip (handleJust p), rhs: catchJust p }
+- error:
+    {
+      lhs: Control.Exception.bracket b (const a) (const t),
+      rhs: Control.Exception.bracket_ b a t,
+    }
+- error:
+    { lhs: Control.Exception.bracket (openFile x y) hClose, rhs: withFile x y }
+- error:
+    {
+      lhs: Control.Exception.bracket (openBinaryFile x y) hClose,
+      rhs: withBinaryFile x y,
+    }
+- error: { lhs: throw (ErrorCall a), rhs: error a }
+- error: { lhs: toException NonTermination, rhs: nonTermination }
+- error: { lhs: toException NestedAtomically, rhs: nestedAtomically }
+
+# IOREF
+
+- error: { lhs: modifyIORef r (const x), rhs: writeIORef r x }
+- error: { lhs: modifyIORef r (\v -> x), rhs: writeIORef r x }
+
+# STOREABLE/PTR
+
+- error: { lhs: castPtr nullPtr, rhs: nullPtr }
+- error: { lhs: castPtr (castPtr x), rhs: castPtr x }
+- error: { lhs: plusPtr (castPtr x), rhs: plusPtr x }
+- error: { lhs: minusPtr (castPtr x), rhs: minusPtr x }
+- error: { lhs: minusPtr x (castPtr y), rhs: minusPtr x y }
+- error: { lhs: peekByteOff (castPtr x), rhs: peekByteOff x }
+- error: { lhs: pokeByteOff (castPtr x), rhs: pokeByteOff x }
+
+# WEAK POINTERS
+
+- error: { lhs: mkWeak a a b, rhs: mkWeakPtr a b }
+- error: { lhs: "mkWeak a (a, b) c", rhs: mkWeakPair a b c }
+
+# FOLDABLE
+
+- error:
+    {
+      lhs: case m of Nothing -> pure (); Just x -> f x,
+      rhs: Data.Foldable.for_ m f,
+    }
+- error:
+    {
+      lhs: case m of Nothing -> return (); Just x -> f x,
+      rhs: Data.Foldable.forM_ m f,
+    }
+- error:
+    {
+      lhs: case m of Just x -> f x; Nothing -> pure (),
+      rhs: Data.Foldable.for_ m f,
+    }
+- error:
+    {
+      lhs: case m of Just x -> f x; Nothing -> return (),
+      rhs: Data.Foldable.forM_ m f,
+    }
+- error:
+    { lhs: case m of Just x -> f x; _ -> pure (), rhs: Data.Foldable.for_ m f }
+- error:
+    {
+      lhs: case m of Just x -> f x; _ -> return (),
+      rhs: Data.Foldable.forM_ m f,
+    }
+- error: { lhs: when (isJust m) (f (fromJust m)), rhs: Data.Foldable.for_ m f }
+- error:
+    {
+      lhs: concatMap f (fmap g x),
+      rhs: concatMap (f . g) x,
+      name: Fuse concatMap/fmap,
+    }
+- error:
+    {
+      lhs: concatMap f (g <$> x),
+      rhs: concatMap (f . g) x,
+      name: Fuse concatMap/<$>,
+    }
+- error:
+    {
+      lhs: concatMap f (x <&> g),
+      rhs: concatMap (f . g) x,
+      name: Fuse concatMap/<&>,
+    }
+- error: { lhs: null (concatMap f x), rhs: all (null . f) x }
+- error: { lhs: or (concat x), rhs: any or x }
+- error: { lhs: or (concatMap f x), rhs: any (or . f) x }
+- error: { lhs: and (concat x), rhs: all and x }
+- error: { lhs: and (concatMap f x), rhs: all (and . f) x }
+- error: { lhs: any f (concat x), rhs: any (any f) x, name: Use any nested }
+- error:
+    { lhs: any f (concatMap g x), rhs: any (any f . g) x, name: Use any nested }
+- error: { lhs: all f (concat x), rhs: all (all f) x, name: Use all nested }
+- error:
+    { lhs: all f (concatMap g x), rhs: all (all f . g) x, name: Use all nested }
+- error: { lhs: fold (concatMap f x), rhs: foldMap (fold . f) x }
+- error:
+    {
+      lhs: foldMap f (concatMap g x),
+      rhs: foldMap (foldMap f . g) x,
+      name: Use foldMap nested,
+    }
+- error:
+    {
+      lhs: catMaybes (concatMap f x),
+      rhs: concatMap (catMaybes . f) x,
+      name: Move catMaybes,
+    }
+- error:
+    {
+      lhs: catMaybes (concat x),
+      rhs: concatMap catMaybes x,
+      name: Move catMaybes,
+    }
+- error:
+    {
+      lhs: filter f (concatMap g x),
+      rhs: concatMap (filter f . g) x,
+      name: Move filter,
+    }
+- error:
+    { lhs: filter f (concat x), rhs: concatMap (filter f) x, name: Move filter }
+- error:
+    {
+      lhs: mapMaybe f (concatMap g x),
+      rhs: concatMap (mapMaybe f . g) x,
+      name: Move mapMaybe,
+    }
+- error:
+    {
+      lhs: mapMaybe f (concat x),
+      rhs: concatMap (mapMaybe f) x,
+      name: Move mapMaybe,
+    }
+- error: { lhs: or (fmap p x), rhs: any p x }
+- error: { lhs: or (p <$> x), rhs: any p x }
+- error: { lhs: or (x <&> p), rhs: any p x }
+- error: { lhs: and (fmap p x), rhs: all p x }
+- error: { lhs: and (p <$> x), rhs: all p x }
+- error: { lhs: and (x <&> p), rhs: all p x }
+- error: { lhs: any f (fmap g x), rhs: any (f . g) x }
+- error: { lhs: any f (g <$> x), rhs: any (f . g) x }
+- error: { lhs: any f (x <&> g), rhs: any (f . g) x }
+- error: { lhs: all f (fmap g x), rhs: all (f . g) x }
+- error: { lhs: all f (g <$> x), rhs: all (f . g) x }
+- error: { lhs: all f (x <&> g), rhs: all (f . g) x }
+- error:
+    { lhs: foldr f z (fmap g x), rhs: foldr (f . g) z x, name: Fuse foldr/fmap }
+- error:
+    { lhs: foldr f z (g <$> x), rhs: foldr (f . g) z x, name: Fuse foldr/<$> }
+- error:
+    { lhs: foldr f z (x <&> g), rhs: foldr (f . g) z x, name: Fuse foldr/<&> }
+- error: { lhs: fold (Data.Foldable.toList x), rhs: fold x }
+- error: { lhs: foldMap f (Data.Foldable.toList x), rhs: foldMap f x }
+- error: { lhs: foldMap' f (Data.Foldable.toList x), rhs: foldMap' f x }
+- error: { lhs: foldr f z (Data.Foldable.toList x), rhs: foldr f z x }
+- error: { lhs: foldr' f z (Data.Foldable.toList x), rhs: foldr' f z x }
+- error: { lhs: foldl f z (Data.Foldable.toList x), rhs: foldl f z x }
+- error: { lhs: foldl' f z (Data.Foldable.toList x), rhs: foldl' f z x }
+- error: { lhs: foldr1 f (Data.Foldable.toList x), rhs: foldr1 f x }
+- error: { lhs: foldl1 f (Data.Foldable.toList x), rhs: foldl1 f x }
+- error: { lhs: null (Data.Foldable.toList x), rhs: null x }
+- error: { lhs: length (Data.Foldable.toList x), rhs: length x }
+- error: { lhs: elem y (Data.Foldable.toList x), rhs: elem y x }
+- error: { lhs: notElem y (Data.Foldable.toList x), rhs: notElem y x }
+- error: { lhs: maximum (Data.Foldable.toList x), rhs: maximum x }
+- error: { lhs: minimum (Data.Foldable.toList x), rhs: minimum x }
+- error: { lhs: maximumBy f (Data.Foldable.toList x), rhs: maximumBy f x }
+- error: { lhs: minimumBy f (Data.Foldable.toList x), rhs: minimumBy f x }
+- error: { lhs: sum (Data.Foldable.toList x), rhs: sum x }
+- error: { lhs: product (Data.Foldable.toList x), rhs: product x }
+- error: { lhs: and (Data.Foldable.toList x), rhs: and x }
+- error: { lhs: or (Data.Foldable.toList x), rhs: or x }
+- error: { lhs: all f (Data.Foldable.toList x), rhs: all f x }
+- error: { lhs: any f (Data.Foldable.toList x), rhs: any f x }
+- error: { lhs: find f (Data.Foldable.toList x), rhs: find f x }
+- error: { lhs: concat (Data.Foldable.toList x), rhs: concat x }
+- error: { lhs: concatMap f (Data.Foldable.toList x), rhs: concatMap f x }
+- error: { lhs: foldrM f c (Data.Foldable.toList x), rhs: foldrM f c x }
+- error: { lhs: foldlM f c (Data.Foldable.toList x), rhs: foldlM f c x }
+- error: { lhs: traverse_ f (Data.Foldable.toList x), rhs: traverse_ f x }
+- error: { lhs: for_ (Data.Foldable.toList x) f, rhs: for_ x f }
+- error: { lhs: sequenceA_ (Data.Foldable.toList x), rhs: sequenceA_ x }
+- error: { lhs: asum (Data.Foldable.toList x), rhs: asum x }
+- error: { lhs: mapM_ f (Data.Foldable.toList x), rhs: mapM_ f x }
+- error: { lhs: forM_ (Data.Foldable.toList x) f, rhs: forM_ x f }
+- error: { lhs: sequence_ (Data.Foldable.toList x), rhs: sequence_ x }
+- error: { lhs: msum (Data.Foldable.toList x), rhs: msum x }
+
+# STATE MONAD
+
+- error: { lhs: f <$> Control.Monad.State.get, rhs: gets f }
+- error: { lhs: Control.Monad.State.get <&> f, rhs: gets f }
+- error: { lhs: fmap f  Control.Monad.State.get, rhs: gets f }
+- error: { lhs: f <$> Control.Monad.State.gets g, rhs: gets (f . g) }
+- error: { lhs: Control.Monad.State.gets g <&> f, rhs: gets (f . g) }
+- error: { lhs: fmap f (Control.Monad.State.gets g), rhs: gets (f . g) }
+- error: { lhs: f <$> Control.Monad.Reader.ask, rhs: asks f }
+- error: { lhs: Control.Monad.Reader.ask <&> f, rhs: asks f }
+- error: { lhs: fmap f Control.Monad.Reader.ask, rhs: asks f }
+- error: { lhs: f <$> Control.Monad.Reader.asks g, rhs: asks (f . g) }
+- error: { lhs: Control.Monad.Reader.asks g <&> f, rhs: asks (f . g) }
+- error: { lhs: fmap f (Control.Monad.Reader.asks g), rhs: asks (f . g) }
+- error: { lhs: fst (runState m s), rhs: evalState m s }
+- error: { lhs: snd (runState m s), rhs: execState m s }
+
+# EVALUATE
+
+- error: { lhs: True && x, rhs: x, name: Evaluate }
+- error: { lhs: False && x, rhs: "False", name: Evaluate }
+- error: { lhs: True || x, rhs: "True", name: Evaluate }
+- error: { lhs: False || x, rhs: x, name: Evaluate }
+- error: { lhs: not True, rhs: "False", name: Evaluate }
+- error: { lhs: not False, rhs: "True", name: Evaluate }
+- error: { lhs: Nothing >>= k, rhs: Nothing, name: Evaluate }
+- error: { lhs: k =<< Nothing, rhs: Nothing, name: Evaluate }
+- error: { lhs: either f g (Left x), rhs: f x, name: Evaluate }
+- error: { lhs: either f g (Right y), rhs: g y, name: Evaluate }
+- error: { lhs: "fst (x,y)", rhs: x, name: Evaluate }
+- error: { lhs: "snd (x,y)", rhs: "y", name: Evaluate }
+- error: { lhs: fromJust (Just x), rhs: x, name: Evaluate }
+- error: { lhs: fromLeft y (Left x), rhs: x, name: Evaluate }
+- error: { lhs: fromLeft y (Right x), rhs: "y", name: Evaluate }
+- error: { lhs: fromRight y (Right x), rhs: x, name: Evaluate }
+- error: { lhs: fromRight y (Left x), rhs: "y", name: Evaluate }
+- error: { lhs: "head [x]", rhs: "x", name: Evaluate }
+- error: { lhs: "last [x]", rhs: "x", name: Evaluate }
+- error: { lhs: "tail [x]", rhs: "[]", name: Evaluate }
+- error: { lhs: "init [x]", rhs: "[]", name: Evaluate }
+- error: { lhs: "null [x]", rhs: "False", name: Evaluate }
+- error: { lhs: "null []", rhs: "True", name: Evaluate }
+- error: { lhs: 'null ""', rhs: "True", name: Evaluate }
+- error: { lhs: "length []", rhs: "0", name: Evaluate }
+- error: { lhs: 'length ""', rhs: "0", name: Evaluate }
+- error: { lhs: "foldl f z []", rhs: z, name: Evaluate }
+- error: { lhs: "foldr f z []", rhs: z, name: Evaluate }
+- error: { lhs: "foldr1 f [x]", rhs: x, name: Evaluate }
+- error: { lhs: "scanr f z []", rhs: "[z]", name: Evaluate }
+- error: { lhs: "scanr1 f []", rhs: "[]", name: Evaluate }
+- error: { lhs: "scanr1 f [x]", rhs: "[x]", name: Evaluate }
+- error:
+    { lhs: "take n []", rhs: "[]", note: IncreasesLaziness, name: Evaluate }
+- error:
+    { lhs: 'take n ""', rhs: '""', note: IncreasesLaziness, name: Evaluate }
+- error:
+    { lhs: "drop n []", rhs: "[]", note: IncreasesLaziness, name: Evaluate }
+- error:
+    { lhs: 'drop n ""', rhs: '""', note: IncreasesLaziness, name: Evaluate }
+- error: { lhs: "takeWhile p []", rhs: "[]", name: Evaluate }
+- error: { lhs: 'takeWhile p ""', rhs: '""', name: Evaluate }
+- error: { lhs: "dropWhile p []", rhs: "[]", name: Evaluate }
+- error: { lhs: 'dropWhile p ""', rhs: '""', name: Evaluate }
+- error: { lhs: "span p []", rhs: "([],[])", name: Evaluate }
+- error: { lhs: 'span p ""', rhs: '("","")', name: Evaluate }
+- error: { lhs: 'lines ""', rhs: "[]", name: Evaluate }
+- error: { lhs: "lines []", rhs: "[]", name: Evaluate }
+- error: { lhs: "unwords []", rhs: '""', name: Evaluate }
+- error: { lhs: x - 0, rhs: x, name: Evaluate }
+- error: { lhs: x * 1, rhs: x, name: Evaluate }
+- error: { lhs: x / 1, rhs: x, name: Evaluate }
+- error: { lhs: "concat [a]", rhs: a, name: Evaluate }
+- error: { lhs: "concat []", rhs: "[]", name: Evaluate }
+- error: { lhs: "concatMap f [a]", rhs: f a, name: Evaluate }
+- error: { lhs: "concatMap f []", rhs: "[]", name: Evaluate }
+- error: { lhs: "zip [] []", rhs: "[]", name: Evaluate }
+- error: { lhs: const x y, rhs: x, name: Evaluate }
+- error:
+    {
+      lhs: any (const False),
+      rhs: const False,
+      note: IncreasesLaziness,
+      name: Evaluate,
+    }
+- error:
+    {
+      lhs: all (const True),
+      rhs: const True,
+      note: IncreasesLaziness,
+      name: Evaluate,
+    }
+- error: { lhs: "[] <> x", rhs: x, name: Evaluate }
+- error: { lhs: '"" <> x', rhs: x, name: Evaluate }
+- error: { lhs: "x <> []", rhs: x, name: Evaluate }
+- error: { lhs: 'x <> ""', rhs: x, name: Evaluate }
+- error: { lhs: "all f [a]", rhs: f a, name: Evaluate }
+- error: { lhs: "all f []", rhs: "True", name: Evaluate }
+- error: { lhs: "any f [a]", rhs: f a, name: Evaluate }
+- error: { lhs: "any f []", rhs: "False", name: Evaluate }
+- error: { lhs: "maximum [a]", rhs: a, name: Evaluate }
+- error: { lhs: "minimum [a]", rhs: a, name: Evaluate }
+- error: { lhs: "map f []", rhs: "[]", name: Evaluate }
+- error: { lhs: "map f [a]", rhs: "[f a]", name: Evaluate }
+
+# FOLDABLE + TUPLES
+
+- error: { lhs: "foldr   f z (x,b)", rhs: f b z, name: Using foldr on tuple }
+- error: { lhs: "foldr'  f z (x,b)", rhs: f b z, name: Using foldr' on tuple }
+- error: { lhs: "foldl   f z (x,b)", rhs: f z b, name: Using foldl on tuple }
+- error: { lhs: "foldl'  f z (x,b)", rhs: f z b, name: Using foldl' on tuple }
+- error: { lhs: "foldMap f   (x,b)", rhs: f b, name: Using foldMap on tuple }
+- error: { lhs: "foldr1  f   (x,b)", rhs: b, name: Using foldr1 on tuple }
+- error: { lhs: "foldl1  f   (x,b)", rhs: b, name: Using foldl1 on tuple }
+- error: { lhs: "elem    e   (x,b)", rhs: e == b, name: Using elem on tuple }
+- error: { lhs: "fold        (x,b)", rhs: b, name: Using fold on tuple }
+- error: { lhs: "toList      (x,b)", rhs: b, name: Using toList on tuple }
+- error: { lhs: "maximum     (x,b)", rhs: b, name: Using maximum on tuple }
+- error: { lhs: "minimum     (x,b)", rhs: b, name: Using minimum on tuple }
+- error: { lhs: "notElem e   (x,b)", rhs: e /= b, name: Using notElem on tuple }
+- error: { lhs: "sum         (x,b)", rhs: b, name: Using sum on tuple }
+- error: { lhs: "product     (x,b)", rhs: b, name: Using product on tuple }
+- error: { lhs: "concat      (x,b)", rhs: b, name: Using concat on tuple }
+- error: { lhs: "concatMap f (x,b)", rhs: f b, name: Using concatMap on tuple }
+- error: { lhs: "and         (x,b)", rhs: b, name: Using and on tuple }
+- error: { lhs: "or          (x,b)", rhs: b, name: Using or on tuple }
+- error: { lhs: "any     f   (x,b)", rhs: f b, name: Using any on tuple }
+- error: { lhs: "all     f   (x,b)", rhs: f b, name: Using all on tuple }
+
+- error: { lhs: "foldr   f z (x,y,b)", rhs: f b z, name: Using foldr on tuple }
+- error: { lhs: "foldr'  f z (x,y,b)", rhs: f b z, name: Using foldr' on tuple }
+- error: { lhs: "foldl   f z (x,y,b)", rhs: f z b, name: Using foldl on tuple }
+- error: { lhs: "foldl'  f z (x,y,b)", rhs: f z b, name: Using foldl' on tuple }
+- error: { lhs: "foldMap f   (x,y,b)", rhs: f b, name: Using foldMap on tuple }
+- error: { lhs: "foldr1  f   (x,y,b)", rhs: b, name: Using foldr1 on tuple }
+- error: { lhs: "foldl1  f   (x,y,b)", rhs: b, name: Using foldl1 on tuple }
+- error: { lhs: "elem    e   (x,y,b)", rhs: e == b, name: Using elem on tuple }
+- error: { lhs: "fold        (x,y,b)", rhs: b, name: Using fold on tuple }
+- error: { lhs: "toList      (x,y,b)", rhs: b, name: Using toList on tuple }
+- error: { lhs: "maximum     (x,y,b)", rhs: b, name: Using maximum on tuple }
+- error: { lhs: "minimum     (x,y,b)", rhs: b, name: Using minimum on tuple }
+- error:
+    { lhs: "notElem e   (x,y,b)", rhs: e /= b, name: Using notElem on tuple }
+- error: { lhs: "sum         (x,y,b)", rhs: b, name: Using sum on tuple }
+- error: { lhs: "product     (x,y,b)", rhs: b, name: Using product on tuple }
+- error: { lhs: "concat      (x,y,b)", rhs: b, name: Using concat on tuple }
+- error:
+    { lhs: "concatMap f (x,y,b)", rhs: f b, name: Using concatMap on tuple }
+- error: { lhs: "and         (x,y,b)", rhs: b, name: Using and on tuple }
+- error: { lhs: "or          (x,y,b)", rhs: b, name: Using or on tuple }
+- error: { lhs: "any     f   (x,y,b)", rhs: f b, name: Using any on tuple }
+- error: { lhs: "all     f   (x,y,b)", rhs: f b, name: Using all on tuple }
+
+- error:
+    { lhs: null x, rhs: "False", side: isTuple x, name: Using null on tuple }
+- error:
+    { lhs: length x, rhs: "1", side: isTuple x, name: Using length on tuple }
+
+# MAP
+
+- error: { lhs: "Data.Map.fromList []", rhs: Data.Map.empty }
+- error: { lhs: "Data.Map.Lazy.fromList []", rhs: Data.Map.Lazy.empty }
+- error: { lhs: "Data.Map.Strict.fromList []", rhs: Data.Map.Strict.empty }
+
+# group: lens
+
+- error: { lhs: "(a ^. b) ^. c", rhs: "a ^. (b . c)" }
+- error: { lhs: "fromJust (a ^? b)", rhs: "a ^?! b" }
+- error: { lhs: "a .~ Just b", rhs: "a ?~ b" }
+- error: { lhs: "(mapped %~ b) a", rhs: "a <&> b" }
+- error: { lhs: "((mapped . b) %~ c) a", rhs: "a <&> b %~ c" }
+- error: { lhs: "(mapped .~ b) a", rhs: "b <$ a" }
+- error: { lhs: "ask <&> (^. a)", rhs: "view a" }
+- error: { lhs: "view a <&> (^. b)", rhs: "view (a . b)" }
+
+# `at` pitfalls:
+
+- error:
+    { lhs: "Control.Lens.at a . Control.Lens._Just", rhs: "Control.Lens.ix a" }
+- error: { lhs: "Control.Lens.has (Control.Lens.at a)", rhs: "True" }
+- error:
+    {
+      lhs: "Control.Lens.has (a . Control.Lens.at b)",
+      rhs: "Control.Lens.has a",
+    }
+- error: { lhs: "Control.Lens.nullOf (Control.Lens.at a)", rhs: "False" }
+- error:
+    {
+      lhs: "Control.Lens.nullOf (a . Control.Lens.at b)",
+      rhs: "Control.Lens.nullOf a",
+    }
+
+# group: use-lens
+
+- error: { lhs: "either Just (const Nothing)", rhs: preview _Left }
+- error: { lhs: "either (const Nothing) Just", rhs: preview _Right }
+
+# group: use-th-quotes
+
+- error: { lhs: "TH.varE 'a", rhs: "[|a|]", name: Use TH quotation brackets }
+
+# group: quickcheck
+
+- error: { lhs: "Test.QuickCheck.choose (x,x)", rhs: return x }
+- error: { lhs: "Test.QuickCheck.chooseInt (x,x)", rhs: return x }
+- error: { lhs: "Test.QuickCheck.chooseInteger (x,x)", rhs: return x }
+- error: { lhs: "Test.QuickCheck.chooseBoundedIntegral (x,x)", rhs: return x }
+- error: { lhs: "Test.QuickCheck.chooseEnum (x,x)", rhs: return x }
+- error:
+    {
+      lhs: Control.Monad.join (Test.QuickCheck.elements l),
+      rhs: Test.QuickCheck.oneof l,
+    }
+- error: { lhs: "Test.QuickCheck.elements [x]", rhs: "return x" }
+- error: { lhs: "Test.QuickCheck.growingElements [x]", rhs: "return x" }
+- error: { lhs: "Test.QuickCheck.oneof [x]", rhs: "x", name: Evaluate }
+- error: { lhs: "Test.QuickCheck.frequency [(a,x)]", rhs: "x", name: Evaluate }
+
+# group: generalise
+
+- error: { lhs: map, rhs: fmap }
+- error: { lhs: a ++ b, rhs: a <> b }
+- error: { lhs: "sequence [a]", rhs: "pure <$> a" }
+- error: { lhs: "x /= []", rhs: not (null x), name: Use null }
+- error: { lhs: 'x /= ""', rhs: not (null x), name: Use null }
+- error: { lhs: "[] /= x", rhs: not (null x), name: Use null }
+- error: { lhs: '"" /= x', rhs: not (null x), name: Use null }
+- error: { lhs: "maybe []", rhs: foldMap }
+
+# group: partial
+#
+# Warn on partial functions whose use can be avoided relatively easily.
+# These functions are in the base package, excluding IO and GHC modules.
+
+# Data.Bits
+
+- error:
+    {
+      lhs: bitSize x,
+      rhs:
+        'case bitSizeMaybe x of Just n -> n; Nothing -> todo "handle Nothing
+        case of bitSizeMaybe"',
+      name: Avoid partial function,
+    }
+- error: { lhs: shiftL x b, rhs: shift x b, name: Avoid partial function }
+- error: { lhs: shiftR x b, rhs: shift x (-b), name: Avoid partial function }
+- error: { lhs: unsafeShiftL x b, rhs: shift x b, name: Avoid partial function }
+- error:
+    { lhs: unsafeShiftR x b, rhs: shift x (-b), name: Avoid partial function }
+- error: { lhs: rotateL x b, rhs: rotate x b, name: Avoid partial function }
+- error: { lhs: rotateR x b, rhs: rotate x (-b), name: Avoid partial function }
+
+# Data.List
+
+- error:
+    {
+      lhs: head l,
+      rhs: 'case l of x:_ -> x; [] -> todo "handle empty case of list"',
+      name: Avoid partial function,
+    }
+- error:
+    {
+      lhs: last l,
+      rhs: 'case reverse l of x:_ -> x; [] -> todo "handle empty case of list"',
+      name: Avoid partial function,
+    }
+- error:
+    {
+      lhs: tail l,
+      rhs: 'case l of _:xs -> xs; [] -> todo "handle empty case of list"',
+      name: Avoid partial function,
+    }
+- error:
+    {
+      lhs: init l,
+      rhs:
+        'case reverse l of _:xs -> reverse xs; [] -> todo "handle empty case of
+        list"',
+      name: Avoid partial function,
+    }
+- error:
+    {
+      lhs: l !! n,
+      rhs: 'case drop n l of x:_ -> x; [] -> todo "handle empty case of list"',
+      name: Avoid partial function,
+    }
+
+# Data.List.NonEmpty
+
+- error:
+    {
+      lhs: Data.List.NonEmpty.fromList l,
+      rhs:
+        'case nonEmpty l of Just xs -> xs; Nothing -> todo "handle empty case of
+        list"',
+      name: Avoid partial function,
+    }
+
+# Data.Maybe
+
+- error:
+    {
+      lhs: fromJust v,
+      rhs:
+        'case v of Just x -> x; Nothing -> todo "handle Nothing case of Maybe
+        value"',
+      name: Avoid partial function,
+    }
+
+# group: dollar
+
+- error: { lhs: a $ b $ c, rhs: a . b $ c }
+
+# group: strict
+
+- functions:
+    - { name: bifoldr1, within: [], message: "Avoid partial function" }
+    - { name: bifoldl1, within: [], message: "Avoid partial function" }
+    - { name: bimaximum, within: [], message: "Avoid partial function" }
+    - { name: biminimum, within: [], message: "Avoid partial function" }
+    - { name: bimaximumBy, within: [], message: "Avoid partial function" }
+    - { name: biminimumBy, within: [], message: "Avoid partial function" }
+    - { name: foldr1, within: [], message: "Avoid partial function" }
+    - { name: foldl1, within: [], message: "Avoid partial function" }
+    - { name: maximum, within: [], message: "Avoid partial function" }
+    - { name: minimum, within: [], message: "Avoid partial function" }
+    - { name: maximumBy, within: [], message: "Avoid partial function" }
+    - { name: minimumBy, within: [], message: "Avoid partial function" }
+    - { name: digitToInt, within: [], message: "Avoid partial function" }
+    - { name: intToDigit, within: [], message: "Avoid partial function" }
+    - { name: div', within: [], message: "Avoid partial function" }
+    - { name: mod', within: [], message: "Avoid partial function" }
+    - { name: divMod', within: [], message: "Avoid partial function" }
+    - { name: cycle, within: [], message: "Avoid partial function" }
+    - { name: "%", within: [], message: "Avoid partial function" }
+    # - { name: succ, within: [], message: "Avoid partial function" }
+    - { name: pred, within: [], message: "Avoid partial function" }
+    # - { name: toEnum, within: [], message: "Avoid partial function" }
+    # - { name: fromEnum, within: [], message: "Avoid partial function" }
+    - { name: quot, within: [], message: "Avoid partial function" }
+    - { name: rem, within: [], message: "Avoid partial function" }
+    - { name: div, within: [], message: "Avoid partial function" }
+    - { name: mod, within: [], message: "Avoid partial function" }
+    - { name: quotRem, within: [], message: "Avoid partial function" }
+    - { name: divMod, within: [], message: "Avoid partial function" }
+    - { name: unsafePerformIO, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeInterleaveIO,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeFixIO, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeLocalStateIO,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeDupablePerformIO,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeCoerce, within: [], message: "Avoid partial function" }
+    - { name: unsafeCoerce#, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeCoerceUnlifted,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeInsert, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - { name: unsafeSameArray, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdateM, within: [], message: "Avoid partial function" }
+    - { name: unsafeViaShow, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeTextWithoutNewlines,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeViaShow, within: [], message: "Avoid partial function" }
+    - { name: unsafePeekStyle, within: [], message: "Avoid partial function" }
+    - { name: unsafePopStyle, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeUniformFillMutableByteArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeUniformFillMutableByteArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeFromArraySlice,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeFromList, within: [], message: "Avoid partial function" }
+    - { name: unsafeFromList, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrowFront, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCast, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeCoerceVector,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeCast, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeCoerceMVector,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCast, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeCoerceVector,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeFromForeignPtr,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeFromForeignPtr0,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeToForeignPtr,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeToForeignPtr0,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeWith, within: [], message: "Avoid partial function" }
+    - { name: unsafeCast, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeCoerceMVector,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeFromForeignPtr,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeFromForeignPtr0,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeToForeignPtr,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeToForeignPtr0,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeWith, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeFromArraySlice,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccum, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate, within: [], message: "Avoid partial function" }
+    - { name: unsafeAccumulate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeBackpermute, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreeze, within: [], message: "Avoid partial function" }
+    - { name: unsafeHead, within: [], message: "Avoid partial function" }
+    - { name: unsafeHeadM, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndex, within: [], message: "Avoid partial function" }
+    - { name: unsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeLast, within: [], message: "Avoid partial function" }
+    - { name: unsafeLastM, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpd, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate, within: [], message: "Avoid partial function" }
+    - { name: unsafeUpdate_, within: [], message: "Avoid partial function" }
+    - { name: unsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: unsafeDrop, within: [], message: "Avoid partial function" }
+    - { name: unsafeExchange, within: [], message: "Avoid partial function" }
+    - { name: unsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: unsafeInit, within: [], message: "Avoid partial function" }
+    - { name: unsafeModify, within: [], message: "Avoid partial function" }
+    - { name: unsafeModifyM, within: [], message: "Avoid partial function" }
+    - { name: unsafeMove, within: [], message: "Avoid partial function" }
+    - { name: unsafeNew, within: [], message: "Avoid partial function" }
+    - { name: unsafeRead, within: [], message: "Avoid partial function" }
+    - { name: unsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: unsafeSwap, within: [], message: "Avoid partial function" }
+    - { name: unsafeTail, within: [], message: "Avoid partial function" }
+    - { name: unsafeTake, within: [], message: "Avoid partial function" }
+    - { name: unsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: unsafeViaShow, within: [], message: "Avoid partial function" }
+    - { name: unsafePartsOf, within: [], message: "Avoid partial function" }
+    - { name: unsafePartsOf', within: [], message: "Avoid partial function" }
+    - { name: unsafeSingular, within: [], message: "Avoid partial function" }
+    - { name: unsafePartsOf, within: [], message: "Avoid partial function" }
+    - { name: unsafePartsOf', within: [], message: "Avoid partial function" }
+    - { name: unsafeSingular, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeDupableInterleave,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeIOToPrim, within: [], message: "Avoid partial function" }
+    - { name: unsafeInlineIO, within: [], message: "Avoid partial function" }
+    - { name: unsafeInlinePrim, within: [], message: "Avoid partial function" }
+    - { name: unsafeInlineST, within: [], message: "Avoid partial function" }
+    - { name: unsafeInterleave, within: [], message: "Avoid partial function" }
+    - { name: unsafePrimToIO, within: [], message: "Avoid partial function" }
+    - { name: unsafePrimToPrim, within: [], message: "Avoid partial function" }
+    - { name: unsafePrimToST, within: [], message: "Avoid partial function" }
+    - { name: unsafeSTToPrim, within: [], message: "Avoid partial function" }
+    - { name: unsafeFreezeArray, within: [], message: "Avoid partial function" }
+    - { name: unsafeThawArray, within: [], message: "Avoid partial function" }
+    - {
+        name: unsafeFreezeByteArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeThawByteArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeFreezePrimArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeThawPrimArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeFreezeSmallArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeThawSmallArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - {
+        name: unsafeProcessHandle,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: unsafeVacuous, within: [], message: "Avoid partial function" }
+    - { name: unsafeVacuousM, within: [], message: "Avoid partial function" }
+    - {
+        name: defaultUnsafeUniformFillMutableByteArray,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: basicUnsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeFreeze, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeIndexM, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeThaw, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeMove, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeNew, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeRead, within: [], message: "Avoid partial function" }
+    - {
+        name: basicUnsafeReplicate,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: basicUnsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeCopy, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeGrow, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeMove, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeNew, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeRead, within: [], message: "Avoid partial function" }
+    - {
+        name: basicUnsafeReplicate,
+        within: [],
+        message: "Avoid partial function",
+      }
+    - { name: basicUnsafeSlice, within: [], message: "Avoid partial function" }
+    - { name: basicUnsafeWrite, within: [], message: "Avoid partial function" }
+    - { name: iunsafePartsOf, within: [], message: "Avoid partial function" }
+    - { name: iunsafePartsOf', within: [], message: "Avoid partial function" }
+    - { name: iunsafePartsOf, within: [], message: "Avoid partial function" }
+    - { name: iunsafePartsOf', within: [], message: "Avoid partial function" }
+    - { name: _Unsafe, within: [], message: "Avoid partial function" }
