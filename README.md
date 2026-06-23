@@ -2,6 +2,11 @@
 
 # haskell-agentic-stack-template
 
+## Development dependencies
+
+- [Haskell Stack](https://docs.haskellstack.org/en/stable/) (can be installed via [GHCUp](https://www.haskell.org/ghcup/))
+- [Just](https://just.systems)
+
 ## Usage
 
 To use this template:
