@@ -12,7 +12,7 @@ gh repo create <project_name> --template "rybla/haskell-agentic-stack-template" 
 
 Replace all appearances of "haskell-agentic-stack-template" with your project name ("<project_name>").
 
-Replace all template variables in [`package.yaml](./package.yaml) with the appropriate values.
+Replace all template variables in [package.yaml](./package.yaml) with the appropriate values.
 
 ## Development dependencies
 
