@@ -52,7 +52,7 @@ There are also some custom linting rules for development use, such as the follow
     {
       name: "todo",
       lhs: "todo s",
-      rhs: "todo s"
+      rhs: "replace with actual implementation"
     }
 ```
 
