@@ -4,11 +4,11 @@ cabal-version: 2.2
 --
 -- see: https://github.com/sol/hpack
 
-name:           haskell-stack-agentic-template
+name:           haskell-agentic-stack-template
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/<github_username>/haskell-stack-agentic-template#readme>
-homepage:       https://github.com/<github_username>/haskell-stack-agentic-template#readme
-bug-reports:    https://github.com/<github_username>/haskell-stack-agentic-template/issues
+description:    Please see the README on GitHub at <https://github.com/<author_github_username>/haskell-agentic-stack-template#readme>
+homepage:       https://github.com/<author_github_username>/haskell-agentic-stack-template#readme
+bug-reports:    https://github.com/<author_github_username>/haskell-agentic-stack-template/issues
 author:         <author_name>
 maintainer:     <author_email>
 copyright:      <copyright>; <author_name>
@@ -21,16 +21,16 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/<github_username>/haskell-stack-agentic-template
+  location: https://github.com/<author_github_username>/haskell-agentic-stack-template
 
 library
   exposed-modules:
       Lib
       Utilities.Unsafe
   other-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   autogen-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   hs-source-dirs:
       src
   default-extensions:
@@ -62,12 +62,12 @@ library
     , transformers
   default-language: GHC2024
 
-executable haskell-stack-agentic-template-exe
+executable haskell-agentic-stack-template-exe
   main-is: Main.hs
   other-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   autogen-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   hs-source-dirs:
       app
   default-extensions:
@@ -90,7 +90,7 @@ executable haskell-stack-agentic-template-exe
     , deepseq
     , directory
     , filepath
-    , haskell-stack-agentic-template
+    , haskell-agentic-stack-template
     , lens
     , mtl
     , parsec
@@ -100,13 +100,13 @@ executable haskell-stack-agentic-template-exe
     , transformers
   default-language: GHC2024
 
-test-suite haskell-stack-agentic-template-test
+test-suite haskell-agentic-stack-template-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   autogen-modules:
-      Paths_haskell_stack_agentic_template
+      Paths_haskell_agentic_stack_template
   hs-source-dirs:
       test
   default-extensions:
@@ -129,7 +129,7 @@ test-suite haskell-stack-agentic-template-test
     , deepseq
     , directory
     , filepath
-    , haskell-stack-agentic-template
+    , haskell-agentic-stack-template
     , lens
     , mtl
     , parsec

@@ -1,16 +1,16 @@
 <!-- [TODO]: replace this document with an approprate README for your project -->
 
-# haskell-stack-agentic-template
+# haskell-agentic-stack-template
 
 ## Usage
 
 To use this template:
 
 ```
-gh repo create <project_name> --template "rybla/haskell-stack-agentic-template" --public --clone
+gh repo create <project_name> --template "rybla/haskell-agentic-stack-template" --public --clone
 ```
 
-Replace all appearances of "haskell-stack-agentic-template" with your project name ("<project_name>").
+Replace all appearances of "haskell-agentic-stack-template" with your project name ("<project_name>").
 
 Replace all template variables in [`package.yaml](./package.yaml) with the appropriate values.
 
@@ -68,7 +68,7 @@ For some partial functions, such as `head`, a rewrite rule can assist the agent 
 
 [Hoogle](https://hoogle.haskell.org) is a great tool for exploring dependencies with advanced queries.
 The [`hoogle.sh`](./hoogle.sh) script and associated `just hoogle` recipe provides a simple interface to querying Hoogle and ensuring you're always accessing up-to-date information.
-The [hoogle](./.agents/rules/hoogle.md) rule nudges the agent to use Hoogle when thinking about dependencies.
+The [hoogle rule](./.agents/rules/hoogle.md) nudges the agent to use Hoogle when thinking about dependencies.
 
 ### Skills and Rules
 
