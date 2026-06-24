@@ -1,7 +1,6 @@
-module Lib
-  ( someFunc,
-  )
-where
+module Lib where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+import Data.Text.Lazy qualified as TL
+
+greet :: TL.Text -> TL.Text
+greet name = "Greetings, " <> TL.strip name <> "!"
